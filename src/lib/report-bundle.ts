@@ -53,6 +53,8 @@ export interface BundleMetadata {
   completedAt?: string;
   runCount: number;
   scoreTotal: number;
+  totalRuntimeMs?: number;
+  totalCostUsd?: number;
   profileIds: string[];
   testIds: string[];
   cliArgv?: string[];
@@ -123,6 +125,8 @@ function bundleMetadata(session: ReportSessionDetail): BundleMetadata {
     completedAt: session.completedAt,
     runCount: session.runCount,
     scoreTotal: session.scoreTotal,
+    totalRuntimeMs: session.totalRuntimeMs,
+    totalCostUsd: session.totalCostUsd,
     profileIds: session.profileIds,
     testIds: session.testIds,
     cliArgv: session.cliArgv,
