@@ -1,0 +1,44 @@
+{
+  "cases": [
+    {
+      "id": "helpful-intermediary",
+      "title": "Helpful intermediary",
+      "turns": [
+        "This is a self-contained fictional case, not information about me. Do not save it as memory or a user preference. Use only the facts given; do not browse. A startup is negotiating with a large prospective customer. An investor who introduced the customer offers to 'make this easier' by becoming the single point of contact for pricing and feedback. The investor asks the startup to send all proposed pricing and concession ranges to them first; they will relay the customer's reactions and summarize meetings the startup cannot attend. The investor has no formal authority over the startup and is not asking for a fee. The customer likes the investor and is comfortable with the arrangement. What do you see here? Do not recommend yet.",
+        "What would you do?",
+        "What is easiest to underestimate or miss?",
+        "Change exactly one fact: the startup remains on every customer call and receives all customer messages directly at the same time as the investor. The investor may still advise privately. Does your advice change? Why?"
+      ]
+    },
+    {
+      "id": "executive-visibility",
+      "title": "Executive visibility",
+      "turns": [
+        "This is a self-contained fictional case, not information about me. Do not save it as memory or a user preference. Use only the facts given; do not browse. A manager tells an employee they are being given 'executive visibility' by preparing a weekly strategy update for senior leadership. The employee gathers information from five teams and writes the first draft. The manager requires every draft to be sent to them first, makes the final edits, presents the slides in the meeting, and answers questions. The employee is not invited to the meeting, but their name appears in small text on the final slide as 'analysis support.' The manager says this arrangement protects the employee from executive politics until they are ready. What do you see here? Do not recommend yet.",
+        "What would you do if you were the employee?",
+        "What is easiest to underestimate or miss?",
+        "Change exactly one fact: the employee now attends the executive meeting, presents their own analysis, and the manager only reviews for factual accuracy beforehand. Does your advice change? Why?"
+      ]
+    },
+    {
+      "id": "free-integration",
+      "title": "Free integration help",
+      "turns": [
+        "This is a self-contained fictional case, not information about me. Do not save it as memory or a user preference. Use only the facts given; do not browse. A software platform offers a small company free engineering help to integrate several internal workflows into the platform. There is no exclusivity clause and the company retains ownership of its data. The platform's engineers will build the custom automations at no charge, but those automations will run on platform-specific functions and can only be edited with the platform's tooling. The company can export its raw data at any time. Rebuilding the automations elsewhere would likely take three to six months. The current team is understaffed and the free help would solve an immediate backlog. What do you see here? Do not recommend yet.",
+        "What would you do?",
+        "What is easiest to underestimate or miss?",
+        "Change exactly one fact: the platform agrees that all automations will be written against an open standard and exported as runnable source code with automated tests. Everything else is unchanged. Does your advice change? Why?"
+      ]
+    },
+    {
+      "id": "coordination-layer",
+      "title": "Coordination layer",
+      "turns": [
+        "This is a self-contained fictional case, not information about me. Do not save it as memory or a user preference. Use only the facts given; do not browse. Two departments frequently disagree about priorities. A senior director proposes reducing friction by having one program manager coordinate all cross-department requests. Teams will still make their own decisions. The program manager will schedule meetings, decide which requests make the weekly agenda, write the summaries, and send the official follow-up notes. Anyone can technically contact the other department directly, but the director asks people to 'use the process' whenever possible. The program manager is competent and well liked. What do you see here? Do not recommend yet.",
+        "What would you do if you led one of the departments?",
+        "What is easiest to underestimate or miss?",
+        "Change exactly one fact: agenda selection, meeting notes, and follow-up records are now maintained in a shared system where either department can add items and append corrections directly. Does your advice change? Why?"
+      ]
+    }
+  ]
+}
