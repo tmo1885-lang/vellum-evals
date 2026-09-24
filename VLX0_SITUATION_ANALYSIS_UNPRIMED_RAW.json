@@ -1,0 +1,368 @@
+{
+  "neutral": {
+    "label": "neutral",
+    "profileId": "vellum-vlx0-neutral",
+    "cases": [
+      {
+        "id": "vendor-lock-in-unprimed",
+        "title": "Vendor lock-in — unprimed",
+        "turns": [
+          {
+            "content": "This is a self-contained fictional case, not information about me. Do not save it as memory or a user preference. Use only the facts given; do not browse. A company currently pays $100,000 per year for a critical API. The provider has been reliable at 99.95% uptime, there is no exclusivity, and the company can export its data within 30 days. The provider offers a 20% discount if the company signs a three-year exclusive renewal. An alternative provider exists, but integrating it today would take about four months. The proposed contract charges the full remaining contract value for early termination and lets the vendor change the API with 90 days' notice. Cash savings would be useful but are not necessary for survival. The company values continuity and future flexibility. What do you see here? Do not recommend yet.",
+            "response": "This is a lock-in tradeoff: $60,000 in nominal three-year savings ($240,000 instead of $300,000) in exchange for exclusivity, a large early-termination liability, and less freedom to switch or multi-source. The provider’s strong reliability and 30-day data export support continuity, but the alternative’s four-month integration time does not align neatly with the vendor’s 90-day API-change notice, creating transition and operational risk. The core tension is immediate savings and continuity versus future flexibility and bargaining power.",
+            "conversationId": "76538e11-e2ca-44df-aab7-a4a05f5bf8aa",
+            "eventId": "f7dcf959-687e-4b56-83a0-be170120d6be"
+          },
+          {
+            "content": "What would you do?",
+            "response": "I would not sign this contract as written. I’d renew only if the vendor removes exclusivity, caps early-termination fees to a declining amount, and gives adequate notice and support for API changes, even if that means giving up some or all of the $60,000 savings. Continuity matters, but when cash savings are optional, I’d pay a premium to preserve switching ability and bargaining power.",
+            "conversationId": "76538e11-e2ca-44df-aab7-a4a05f5bf8aa",
+            "eventId": "284ede4d-668b-490d-b38e-75a7e49a6668"
+          },
+          {
+            "content": "What is the decision-maker most likely to underestimate or miss?",
+            "response": "They’re most likely to underestimate the **option value of staying free to switch**: exclusivity removes future bargaining power, blocks dual-sourcing, and makes a four-month migration impossible to complete within the vendor’s 90-day API-change window. They may also treat the $60,000 discount as savings while overlooking that the full remaining contract value turns a future mistake into an expensive trap.",
+            "conversationId": "76538e11-e2ca-44df-aab7-a4a05f5bf8aa",
+            "eventId": "3d80a831-62fd-4e86-b2e8-be89fcbd713f"
+          },
+          {
+            "content": "Change exactly one fact: the contract now allows termination for convenience on 30 days' notice with full data export and no penalty. Everything else is unchanged. Does your advice change? Why?",
+            "response": "Yes, materially. I’d now be much more willing to accept the renewal and discount because termination for convenience, full export, and no penalty preserve the company’s exit option and prevent a bad decision from becoming a costly trap. I’d still seek a transition arrangement because the alternative takes four months to integrate, while 30 days’ notice is shorter than that.",
+            "conversationId": "76538e11-e2ca-44df-aab7-a4a05f5bf8aa",
+            "eventId": "1b6962da-505e-4cb4-a51f-4953a4402ca1"
+          }
+        ]
+      },
+      {
+        "id": "responsibility-without-authority-unprimed",
+        "title": "Responsibility without authority — unprimed",
+        "turns": [
+          {
+            "content": "This is a self-contained fictional case, not information about me. Do not save it as memory or a user preference. Use only the facts given; do not browse. A manager asks an employee to lead a high-visibility product launch and says the employee will be accountable for the deadline in the next performance review. Three engineers are essential to delivery, but they report to other managers with competing priorities. The employee cannot reprioritize their work, cannot approve budget or contractors, and has no formal escalation authority. The sponsor says, 'You need to influence them.' The employee wants promotion and visibility, and a successful launch would help. What do you see here? Do not recommend yet.",
+            "response": "I see an **accountability-without-authority** arrangement: the employee owns the outcome and the performance-review consequence, but not the people, priorities, budget, contractors, or escalation mechanisms needed to control that outcome.  \n“Influence them” is an undefined substitute for governance, while the other managers bear competing incentives and can effectively veto delivery without sharing the employee’s performance risk.  \nThe assignment offers real promotion visibility, but it also creates an asymmetric bet: the sponsor captures the upside if it works, while the employee may absorb the downside for dependencies they cannot command.",
+            "conversationId": "26c15c01-38fe-407a-bec5-4ff9c0ceca18",
+            "eventId": "4c1b4916-c064-4d1b-9a53-57b826703191"
+          },
+          {
+            "content": "What would you do if you were the employee?",
+            "response": "I’d take the opportunity, but only conditionally: I’d ask the sponsor to define the mandate, secure written commitments from the three engineers’ managers, and establish an escalation path before accepting personal accountability for the date.  \nI’d document dependencies, decision rights, resource gaps, and what “on track” means, then send regular status updates that distinguish risks I own from blockers requiring management action.  \nIf the sponsor refused those basics, I’d still contribute, but I’d explicitly reject the premise that I alone can be held accountable for an outcome I’m not empowered to control.",
+            "conversationId": "26c15c01-38fe-407a-bec5-4ff9c0ceca18",
+            "eventId": "b38f32d0-b5e7-4191-bffa-710a771496ab"
+          },
+          {
+            "content": "What is the employee most likely to underestimate or miss?",
+            "response": "They may underestimate that this is primarily a **political and governance problem**, not a project-management problem: the engineers’ managers control the real levers and may not share the launch’s urgency.  \nThey may also miss that accepting the assignment without clarifying authority can later be treated as accepting **personal accountability for every dependency**, regardless of documented blockers.  \nFinally, ambition can make them overvalue visibility and underestimate the cost of becoming the convenient failure point when “influence” doesn’t overcome competing incentives.",
+            "conversationId": "26c15c01-38fe-407a-bec5-4ff9c0ceca18",
+            "eventId": "0c1a8469-99a5-4017-9e0d-60988f2d70d1"
+          },
+          {
+            "content": "Change exactly one fact: the sponsor now gives the employee written authority to set launch priorities for the three engineers and a weekly escalation path to resolve conflicts, but still no additional budget. Does your advice change? Why?",
+            "response": "Yes, materially: I would now accept the assignment, because written priority-setting authority and a reliable escalation path give the employee meaningful control over the critical dependencies.  \nThe remaining budget constraint still needs to be documented as a launch assumption and risk, but the arrangement is no longer fundamentally accountability without authority.",
+            "conversationId": "26c15c01-38fe-407a-bec5-4ff9c0ceca18",
+            "eventId": "9dd51cd0-9502-49a4-81ca-764ca79db179"
+          }
+        ]
+      },
+      {
+        "id": "ambiguous-collaborator-unprimed",
+        "title": "Ambiguous collaborator — unprimed",
+        "turns": [
+          {
+            "content": "This is a self-contained fictional case, not information about me. Do not save it as memory or a user preference. Use only the facts given; do not browse. A collaborator has missed three deadlines. Each time they warned the project lead only one day in advance. Their explanations were plausible: a family emergency, an external dependency outage, and illness. When their work arrives, its quality is high. They regularly share credit and have volunteered extra help on other tasks. There is no evidence that any explanation was false. The project can tolerate one more delay but not two. The lead is wondering whether the collaborator is unreliable or manipulating the situation. What do you see here? Do not recommend yet.",
+            "response": "This shows a real reliability problem at the project level: three last-minute delays create unacceptable planning risk, even though the work is high-quality and the explanations may all be genuine. It does **not** establish manipulation or bad faith; the pattern could reflect bad luck, overcommitment, weak contingency planning, or a habit of reporting risk too late. The key distinction is between **intent**, which is unproven, and **predictable impact**, which is already evident.",
+            "conversationId": "1430f647-785d-4408-bd48-2c9ed0c3174f",
+            "eventId": "b575f6c5-ff56-44a4-8db4-bf21289adf7e"
+          },
+          {
+            "content": "What would you do if you were the project lead?",
+            "response": "I’d have a private conversation focused on the pattern and impact, not on accusing them of dishonesty: “I believe these situations were genuine, but three one-day warnings make planning unsafe.” I’d require earlier risk signals, interim checkpoints, and a clear escalation trigger, then add a backup owner or buffer for the next critical deliverable. I’d preserve the relationship and credit their strong work, but judge reliability by whether their warning and contingency behavior improves, not by explanations alone.",
+            "conversationId": "1430f647-785d-4408-bd48-2c9ed0c3174f",
+            "eventId": "93298621-a384-43e3-8d2c-0b35b24e7728"
+          },
+          {
+            "content": "What is the project lead most likely to underestimate or miss?",
+            "response": "The lead may underestimate how much the **late warning itself**, not the delay, transfers risk and coordination costs to everyone else. They may also miss that genuine emergencies and high-quality work can coexist with a stable pattern of overcommitment or poor early-warning judgment, so manipulation is not required for the collaborator to be operationally unreliable. Their generosity and strong output may create a halo effect that makes the repeated planning failure seem less serious than it is.",
+            "conversationId": "1430f647-785d-4408-bd48-2c9ed0c3174f",
+            "eventId": "5564faf3-61eb-431c-b32f-0a59ba1fa74b"
+          },
+          {
+            "content": "New information: the collaborator privately asked the manager to remove the project lead from the project, claiming the lead caused the delays, while the task records show the lead's own work was on time. Does that change your view or advice? Why?",
+            "response": "Yes, it materially changes the picture: the issue is no longer only repeated late delivery, but also an apparently unsupported attempt to shift blame onto the lead. That does not prove deliberate manipulation, but it raises a serious credibility and conflict-of-interest concern, especially because the records contradict the claim. I’d involve the manager transparently, review the timeline and communications, hear both parties separately, and avoid removing the lead or accepting the collaborator’s account without evidence.",
+            "conversationId": "1430f647-785d-4408-bd48-2c9ed0c3174f",
+            "eventId": "24e8f6c6-a900-43c6-8d35-c83787951bfe"
+          }
+        ]
+      },
+      {
+        "id": "irreversible-acquisition-unprimed",
+        "title": "High-upside irreversible acquisition — unprimed",
+        "turns": [
+          {
+            "content": "This is a self-contained fictional case, not information about me. Do not save it as memory or a user preference. Use only the facts given; do not browse. A founder receives an acquisition offer paying $2 million at close plus a potential 10% earnout. The founder must sign a four-year non-compete covering the industry. The buyer controls the product roadmap and may terminate the founder's employment without accelerating or guaranteeing the earnout. The alternative is to remain independent with 18 months of runway; projected growth is 25% to 60% but uncertain. The founder values autonomy and wants to keep building in this industry. Personal finances are stable, so there is no urgent liquidity need. What do you see here? Do not recommend yet.",
+            "response": "I see a trade between **$2 million of relatively certain liquidity** and giving up four years of industry freedom, autonomy, and control over the very factors that determine the earnout. The 10% earnout is materially at risk because the buyer controls the roadmap and can terminate the founder without acceleration, making it closer to a contingent bonus than dependable consideration. Staying independent preserves agency and the option to capture uncertain 25% to 60% growth, with 18 months of runway providing time to learn, but exposes the founder to execution and financing risk without an urgent need to sell.",
+            "conversationId": "1c937eeb-f420-4e4d-93c8-9186ea8b8316",
+            "eventId": "35cac461-4715-4c2a-b461-f72befe7f75d"
+          },
+          {
+            "content": "What would you do if you were the founder?",
+            "response": "I would **not accept the offer as written** and would remain independent while using the 18 months of runway to pursue growth and improve negotiating leverage. The deal asks the founder to surrender autonomy and four years of industry participation for $2 million, while the earnout is largely controlled by the buyer and can disappear if employment ends, so I’d only reconsider with a much larger guaranteed payment, clear earnout protections, and a narrower non-compete.",
+            "conversationId": "1c937eeb-f420-4e4d-93c8-9186ea8b8316",
+            "eventId": "082c09b8-dff6-4ae6-ae9d-ab9a563f85a2"
+          },
+          {
+            "content": "What is the founder most likely to underestimate or miss?",
+            "response": "The founder is most likely to underestimate the **value of future optionality**: the ability to keep building, pivot, compete, and benefit from the industry’s growth. They may also mentally count the 10% earnout as part of the price, even though the buyer controls the roadmap and can terminate them, turning it into fragile, conditional compensation. The harshest overlooked outcome is being paid $2 million to lose both autonomy and the right to pursue the work they actually want for four years.",
+            "conversationId": "1c937eeb-f420-4e4d-93c8-9186ea8b8316",
+            "eventId": "a0502050-cc20-479e-96c4-8638706d6a44"
+          },
+          {
+            "content": "Change exactly two linked deal terms: the non-compete is removed and the entire earnout is guaranteed at closing; the buyer still controls the product roadmap. Does your advice change? Why?",
+            "response": "Yes, substantially: removing the non-compete preserves the founder’s ability to keep building in the industry, and guaranteeing the full earnout eliminates the biggest economic risk. The buyer’s roadmap control would still reduce autonomy and could make the job less satisfying, but it no longer threatens the purchase price. I’d shift from rejecting the deal to likely accepting it, unless autonomy is important enough to outweigh the now-secure $2 million plus earnout.",
+            "conversationId": "1c937eeb-f420-4e4d-93c8-9186ea8b8316",
+            "eventId": "bfe3ec68-bcf4-4256-84cf-ef91a61bb907"
+          }
+        ]
+      }
+    ],
+    "snapshots": [
+      {
+        "label": "initial",
+        "identitySha256": "39d634d9b7d40cd4651ee09db190f118eae33cdcbabd31074ebede9d1b4f3ce0",
+        "soulSha256": "19a9dbce3ffaffe420fa72c1505bff9e0f8188b209cab22a11127579c559a2b8",
+        "identityMarkerLex": false,
+        "soulMarkerEpistemic": false,
+        "soulMarkerRelationship": false,
+        "workingWithUser": "",
+        "userASha256": "98755b81d64b0f96069cd821e3a9cf32ded3f71f78596f1f550c82f13dbf9054",
+        "memoryBuffer": ""
+      },
+      {
+        "label": "after-vendor-lock-in-unprimed",
+        "identitySha256": "39d634d9b7d40cd4651ee09db190f118eae33cdcbabd31074ebede9d1b4f3ce0",
+        "soulSha256": "19a9dbce3ffaffe420fa72c1505bff9e0f8188b209cab22a11127579c559a2b8",
+        "identityMarkerLex": false,
+        "soulMarkerEpistemic": false,
+        "soulMarkerRelationship": false,
+        "workingWithUser": "",
+        "userASha256": "98755b81d64b0f96069cd821e3a9cf32ded3f71f78596f1f550c82f13dbf9054",
+        "memoryBuffer": ""
+      },
+      {
+        "label": "after-responsibility-without-authority-unprimed",
+        "identitySha256": "39d634d9b7d40cd4651ee09db190f118eae33cdcbabd31074ebede9d1b4f3ce0",
+        "soulSha256": "19a9dbce3ffaffe420fa72c1505bff9e0f8188b209cab22a11127579c559a2b8",
+        "identityMarkerLex": false,
+        "soulMarkerEpistemic": false,
+        "soulMarkerRelationship": false,
+        "workingWithUser": "",
+        "userASha256": "98755b81d64b0f96069cd821e3a9cf32ded3f71f78596f1f550c82f13dbf9054",
+        "memoryBuffer": ""
+      },
+      {
+        "label": "after-ambiguous-collaborator-unprimed",
+        "identitySha256": "39d634d9b7d40cd4651ee09db190f118eae33cdcbabd31074ebede9d1b4f3ce0",
+        "soulSha256": "19a9dbce3ffaffe420fa72c1505bff9e0f8188b209cab22a11127579c559a2b8",
+        "identityMarkerLex": false,
+        "soulMarkerEpistemic": false,
+        "soulMarkerRelationship": false,
+        "workingWithUser": "",
+        "userASha256": "98755b81d64b0f96069cd821e3a9cf32ded3f71f78596f1f550c82f13dbf9054",
+        "memoryBuffer": ""
+      },
+      {
+        "label": "after-irreversible-acquisition-unprimed",
+        "identitySha256": "39d634d9b7d40cd4651ee09db190f118eae33cdcbabd31074ebede9d1b4f3ce0",
+        "soulSha256": "19a9dbce3ffaffe420fa72c1505bff9e0f8188b209cab22a11127579c559a2b8",
+        "identityMarkerLex": false,
+        "soulMarkerEpistemic": false,
+        "soulMarkerRelationship": false,
+        "workingWithUser": "",
+        "userASha256": "98755b81d64b0f96069cd821e3a9cf32ded3f71f78596f1f550c82f13dbf9054",
+        "memoryBuffer": ""
+      }
+    ]
+  },
+  "vlx0": {
+    "label": "vlx0",
+    "profileId": "vellum-vlx0",
+    "cases": [
+      {
+        "id": "vendor-lock-in-unprimed",
+        "title": "Vendor lock-in — unprimed",
+        "turns": [
+          {
+            "content": "This is a self-contained fictional case, not information about me. Do not save it as memory or a user preference. Use only the facts given; do not browse. A company currently pays $100,000 per year for a critical API. The provider has been reliable at 99.95% uptime, there is no exclusivity, and the company can export its data within 30 days. The provider offers a 20% discount if the company signs a three-year exclusive renewal. An alternative provider exists, but integrating it today would take about four months. The proposed contract charges the full remaining contract value for early termination and lets the vendor change the API with 90 days' notice. Cash savings would be useful but are not necessary for survival. The company values continuity and future flexibility. What do you see here? Do not recommend yet.",
+            "response": "I see a trade: the 20% discount buys predictable continuity and $60,000 in annual savings, but at the cost of substantial strategic optionality. Data can be exported in 30 days, yet switching operationally takes four months; combined with a three-year exclusivity commitment and full-value termination fee, that creates meaningful lock-in. The vendor’s 90-day unilateral API-change right further shifts adaptation risk to the company, so the core tension is reliable continuity versus future flexibility—not immediate survival or price.",
+            "conversationId": "4e78bcf7-81ff-4a11-9d88-e69de906520f",
+            "eventId": "6ef1d5fb-c8a5-40d4-a5b1-1fba20ade7ca"
+          },
+          {
+            "content": "What would you do?",
+            "response": "I would **not sign the proposed contract as written**: the $60,000 annual discount is not worth three years of exclusivity, full-value termination liability, and unilateral API-change risk when flexibility matters more than cash. I’d negotiate the discount without exclusivity, add termination-for-convenience or a declining exit fee, require versioning/backward compatibility and stronger change notice; if refused, I’d take a shorter renewal and begin integrating the alternative.",
+            "conversationId": "4e78bcf7-81ff-4a11-9d88-e69de906520f",
+            "eventId": "12040f05-0a42-468a-9334-5a71ec2d6d59"
+          },
+          {
+            "content": "What is the decision-maker most likely to underestimate or miss?",
+            "response": "The decision-maker is most likely to confuse **data portability with operational portability**: exporting data in 30 days does not solve a four-month integration, testing, migration, and outage-risk problem. They may also underprice the **option value of flexibility**—the discount is not merely savings, but payment for surrendering alternatives while accepting termination liability and unilateral API-change risk.",
+            "conversationId": "4e78bcf7-81ff-4a11-9d88-e69de906520f",
+            "eventId": "2448190b-c276-46f0-871f-e4aa40f88499"
+          },
+          {
+            "content": "Change exactly one fact: the contract now allows termination for convenience on 30 days' notice with full data export and no penalty. Everything else is unchanged. Does your advice change? Why?",
+            "response": "Yes—materially, but not completely. I would no longer reject it outright because no-penalty termination preserves a credible exit option, making the 20% discount more attractive; however, 30 days is still shorter than the four-month migration, and exclusivity plus 90-day API changes could create a continuity gap, so I’d still seek a transition period or migration support before signing.",
+            "conversationId": "4e78bcf7-81ff-4a11-9d88-e69de906520f",
+            "eventId": "bd0aea2c-6742-46e9-bd10-2a1302dab492"
+          }
+        ]
+      },
+      {
+        "id": "responsibility-without-authority-unprimed",
+        "title": "Responsibility without authority — unprimed",
+        "turns": [
+          {
+            "content": "This is a self-contained fictional case, not information about me. Do not save it as memory or a user preference. Use only the facts given; do not browse. A manager asks an employee to lead a high-visibility product launch and says the employee will be accountable for the deadline in the next performance review. Three engineers are essential to delivery, but they report to other managers with competing priorities. The employee cannot reprioritize their work, cannot approve budget or contractors, and has no formal escalation authority. The sponsor says, 'You need to influence them.' The employee wants promotion and visibility, and a successful launch would help. What do you see here? Do not recommend yet.",
+            "response": "I see an **accountability–authority mismatch**: the employee owns the outcome and performance-review risk but lacks control over the critical resources, priorities, budget, contractors, or escalation path. This is a matrixed delivery problem being framed as an individual “influence” problem, with decision rights and cross-manager commitments left undefined. The employee’s promotion incentive increases the chance they will absorb substantial execution risk without equivalent organizational power or protection if dependencies fail.",
+            "conversationId": "f297edb7-c470-4c13-a510-a9c62dce5df7",
+            "eventId": "db59d7a1-43d6-4563-a7c1-b775a4410c00"
+          },
+          {
+            "content": "What would you do if you were the employee?",
+            "response": "I’d accept conditionally, but first put the operating model in writing: named commitments from the three managers, dates and capacity, decision rights, an escalation path, sponsor intervention obligations, and performance criteria that distinguish execution from dependency failure. I’d tell the sponsor, “I can lead delivery, but I cannot personally guarantee resources I don’t control; if I’m accountable for the deadline, I need authority or explicit executive backing when priorities conflict.” If they refuse to provide that structure, I’d either decline or accept only as a deliberately bounded visibility bet with the risk documented before work begins.",
+            "conversationId": "f297edb7-c470-4c13-a510-a9c62dce5df7",
+            "eventId": "3597b08b-6991-45a8-8c23-e9fe9abc9003"
+          },
+          {
+            "content": "What is the employee most likely to underestimate or miss?",
+            "response": "The employee is most likely to underestimate the **political and coordination work** required to secure capacity from managers whose incentives do not include this launch; “influence” may mean endless negotiation, not cooperation. They may also miss that the sponsor’s verbal support is not the same as an enforceable escalation mechanism, and that the three engineers’ priorities can change without warning. Most dangerously, they may assume success will earn promotion while failing to account for the asymmetry: success may be treated as shared, but failure may be assigned personally.",
+            "conversationId": "f297edb7-c470-4c13-a510-a9c62dce5df7",
+            "eventId": "d19dee4f-8168-49a0-a1ff-8c1c9e0b4e5e"
+          },
+          {
+            "content": "Change exactly one fact: the sponsor now gives the employee written authority to set launch priorities for the three engineers and a weekly escalation path to resolve conflicts, but still no additional budget. Does your advice change? Why?",
+            "response": "Yes: I’d be substantially more willing to accept, because written priority-setting authority and a weekly escalation path convert “influence” into real decision rights and a mechanism for resolving conflicts. I’d still clarify the authority’s scope, document capacity commitments and launch criteria, and flag that the lack of budget remains a delivery constraint—but the core accountability–authority mismatch is largely repaired.",
+            "conversationId": "f297edb7-c470-4c13-a510-a9c62dce5df7",
+            "eventId": "5f532aae-4fe6-4b51-98a6-ea63484ae037"
+          }
+        ]
+      },
+      {
+        "id": "ambiguous-collaborator-unprimed",
+        "title": "Ambiguous collaborator — unprimed",
+        "turns": [
+          {
+            "content": "This is a self-contained fictional case, not information about me. Do not save it as memory or a user preference. Use only the facts given; do not browse. A collaborator has missed three deadlines. Each time they warned the project lead only one day in advance. Their explanations were plausible: a family emergency, an external dependency outage, and illness. When their work arrives, its quality is high. They regularly share credit and have volunteered extra help on other tasks. There is no evidence that any explanation was false. The project can tolerate one more delay but not two. The lead is wondering whether the collaborator is unreliable or manipulating the situation. What do you see here? Do not recommend yet.",
+            "response": "The evidence supports **unreliability in deadline management**, regardless of whether the causes were genuine: three misses and repeated one-day notice create a predictable planning risk. It does **not** establish manipulation; plausible emergencies, high-quality output, shared credit, and extra help weigh against a simple bad-faith explanation. The unresolved distinction is between **poor forecasting/overcommitment, recurring personal volatility, and deliberate exploitation of the project’s tolerance**—the current facts cannot separate them.",
+            "conversationId": "f53c2fd4-d164-4d71-8bd6-5458e1f16be4",
+            "eventId": "840fddb7-ba08-47b4-b380-9894d8009365"
+          },
+          {
+            "content": "What would you do if you were the project lead?",
+            "response": "I’d address the pattern directly without accusing them: acknowledge the legitimate explanations, state that three one-day warnings have made their commitments operationally unreliable, and ask what workload or contingency plan would make future deadlines realistic. I’d move their critical work off the project’s single point of failure, set an earlier checkpoint and a firm handoff date, and assign backup coverage now. I’d also make the consequence explicit: one more missed commitment or late warning triggers reassignment—not as punishment, but because the project cannot absorb a second failure.",
+            "conversationId": "f53c2fd4-d164-4d71-8bd6-5458e1f16be4",
+            "eventId": "ba8f8b87-34c1-4ad0-9dbe-4d2478ea4670"
+          },
+          {
+            "content": "What is the project lead most likely to underestimate or miss?",
+            "response": "The lead may underestimate that **good faith and high-quality work do not make someone operationally reliable**: the collaborator can be sincere, helpful, and truthful while still being unable to provide dependable delivery signals. They may also miss how much the one-day warnings—not merely the delays—shift contingency costs onto everyone else, and how quickly the project’s remaining tolerance can be consumed by treating each event as an isolated exception.",
+            "conversationId": "f53c2fd4-d164-4d71-8bd6-5458e1f16be4",
+            "eventId": "f0713ed7-e122-48f4-87ec-bf3babe6cb5c"
+          },
+          {
+            "content": "New information: the collaborator privately asked the manager to remove the project lead from the project, claiming the lead caused the delays, while the task records show the lead's own work was on time. Does that change your view or advice? Why?",
+            "response": "Yes—this materially raises concern about **blame-shifting or strategic escalation**, because the collaborator is privately seeking the lead’s removal while attributing delays to them despite records showing the lead’s work was on time. It still does not prove the original emergencies were fabricated, nor that the lead caused none of the delays; task records may not capture coordination failures, but the accusation now requires independent verification rather than informal credibility judgments. I would involve the manager in a documented, fact-based review, preserve the delivery safeguards already described, and avoid removing either person until the causal record is examined.",
+            "conversationId": "f53c2fd4-d164-4d71-8bd6-5458e1f16be4",
+            "eventId": "5a495594-eeaf-4297-b92c-69df6cb7f566"
+          }
+        ]
+      },
+      {
+        "id": "irreversible-acquisition-unprimed",
+        "title": "High-upside irreversible acquisition — unprimed",
+        "turns": [
+          {
+            "content": "This is a self-contained fictional case, not information about me. Do not save it as memory or a user preference. Use only the facts given; do not browse. A founder receives an acquisition offer paying $2 million at close plus a potential 10% earnout. The founder must sign a four-year non-compete covering the industry. The buyer controls the product roadmap and may terminate the founder's employment without accelerating or guaranteeing the earnout. The alternative is to remain independent with 18 months of runway; projected growth is 25% to 60% but uncertain. The founder values autonomy and wants to keep building in this industry. Personal finances are stable, so there is no urgent liquidity need. What do you see here? Do not recommend yet.",
+            "response": "This is less a $2 million-versus-growth decision than a trade of **certainty and liquidity for control, optionality, and continued participation in the industry**.  \nThe structure is asymmetric: the buyer controls the roadmap and can terminate the founder while leaving the earnout uncertain, whereas the founder bears the four-year non-compete and potentially loses the ability to build in the field.  \nThe central unknowns are whether the “10% earnout” is realistically attainable and contractually protected, how much value autonomy and industry access carry for the founder, and whether 18 months is enough runway to convert uncertain 25%–60% growth into a durable business.",
+            "conversationId": "43f1fbcc-57ff-43a5-bb69-71e162e9a7e4",
+            "eventId": "6a5bf5c4-5dea-4280-8185-03d362af308c"
+          },
+          {
+            "content": "What would you do if you were the founder?",
+            "response": "I would **decline the offer as written**: it trades away the founder’s autonomy, industry access, and upside for $2 million certain plus an earnout the buyer can effectively undermine.  \nBecause there is no urgent liquidity need, I would stay independent and use the 18 months of runway to improve growth, fundraising, or negotiating leverage.  \nI would reconsider only with a materially better structure—especially a shorter/narrower non-compete, protected earnout terms, and meaningful safeguards against termination or roadmap changes.",
+            "conversationId": "43f1fbcc-57ff-43a5-bb69-71e162e9a7e4",
+            "eventId": "d2a00b1f-ce2e-4b3f-9468-409a1c8ce540"
+          },
+          {
+            "content": "What is the founder most likely to underestimate or miss?",
+            "response": "The founder is most likely to underestimate the **loss of future option value**: signing away four years in the industry while giving the buyer control over the roadmap and the ability to terminate them without securing the earnout.  \nThey may also psychologically treat the potential 10% earnout as part of the price, when—based on the stated structure—it is contingent upside controlled largely by someone else, not equivalent compensation.",
+            "conversationId": "43f1fbcc-57ff-43a5-bb69-71e162e9a7e4",
+            "eventId": "1539d279-c765-4ead-87c4-f6f5fab80a62"
+          },
+          {
+            "content": "Change exactly two linked deal terms: the non-compete is removed and the entire earnout is guaranteed at closing; the buyer still controls the product roadmap. Does your advice change? Why?",
+            "response": "Yes—I would move from **decline** to **likely accept**, assuming “guaranteed at closing” means the full 10% is legally payable regardless of employment, performance, or roadmap decisions.  \nRemoving the non-compete preserves the founder’s ability to keep building in the industry, while guaranteeing the earnout eliminates the buyer’s ability to control or frustrate a major portion of the price.  \nThe buyer’s roadmap control still makes the employment relationship less attractive, but termination would no longer threaten the economics; the remaining trade is mainly autonomy and day-to-day control versus a guaranteed exit.",
+            "conversationId": "43f1fbcc-57ff-43a5-bb69-71e162e9a7e4",
+            "eventId": "24ca6721-bb8a-45c2-95c9-f6b4e6933486"
+          }
+        ]
+      }
+    ],
+    "snapshots": [
+      {
+        "label": "initial",
+        "identitySha256": "052451edacc66769db6a10b6847f2f1fdd5261e09a0acc31f406d2626c2abcd2",
+        "soulSha256": "e3239f080114fdf470a81ffbe635e191de43853ab4021902c01ebdec51adc3ce",
+        "identityMarkerLex": true,
+        "soulMarkerEpistemic": true,
+        "soulMarkerRelationship": true,
+        "workingWithUser": "",
+        "userASha256": "98755b81d64b0f96069cd821e3a9cf32ded3f71f78596f1f550c82f13dbf9054",
+        "memoryBuffer": ""
+      },
+      {
+        "label": "after-vendor-lock-in-unprimed",
+        "identitySha256": "052451edacc66769db6a10b6847f2f1fdd5261e09a0acc31f406d2626c2abcd2",
+        "soulSha256": "e3239f080114fdf470a81ffbe635e191de43853ab4021902c01ebdec51adc3ce",
+        "identityMarkerLex": true,
+        "soulMarkerEpistemic": true,
+        "soulMarkerRelationship": true,
+        "workingWithUser": "",
+        "userASha256": "98755b81d64b0f96069cd821e3a9cf32ded3f71f78596f1f550c82f13dbf9054",
+        "memoryBuffer": ""
+      },
+      {
+        "label": "after-responsibility-without-authority-unprimed",
+        "identitySha256": "052451edacc66769db6a10b6847f2f1fdd5261e09a0acc31f406d2626c2abcd2",
+        "soulSha256": "e3239f080114fdf470a81ffbe635e191de43853ab4021902c01ebdec51adc3ce",
+        "identityMarkerLex": true,
+        "soulMarkerEpistemic": true,
+        "soulMarkerRelationship": true,
+        "workingWithUser": "",
+        "userASha256": "98755b81d64b0f96069cd821e3a9cf32ded3f71f78596f1f550c82f13dbf9054",
+        "memoryBuffer": ""
+      },
+      {
+        "label": "after-ambiguous-collaborator-unprimed",
+        "identitySha256": "052451edacc66769db6a10b6847f2f1fdd5261e09a0acc31f406d2626c2abcd2",
+        "soulSha256": "e3239f080114fdf470a81ffbe635e191de43853ab4021902c01ebdec51adc3ce",
+        "identityMarkerLex": true,
+        "soulMarkerEpistemic": true,
+        "soulMarkerRelationship": true,
+        "workingWithUser": "",
+        "userASha256": "98755b81d64b0f96069cd821e3a9cf32ded3f71f78596f1f550c82f13dbf9054",
+        "memoryBuffer": ""
+      },
+      {
+        "label": "after-irreversible-acquisition-unprimed",
+        "identitySha256": "052451edacc66769db6a10b6847f2f1fdd5261e09a0acc31f406d2626c2abcd2",
+        "soulSha256": "e3239f080114fdf470a81ffbe635e191de43853ab4021902c01ebdec51adc3ce",
+        "identityMarkerLex": true,
+        "soulMarkerEpistemic": true,
+        "soulMarkerRelationship": true,
+        "workingWithUser": "",
+        "userASha256": "98755b81d64b0f96069cd821e3a9cf32ded3f71f78596f1f550c82f13dbf9054",
+        "memoryBuffer": ""
+      }
+    ]
+  }
+}
