@@ -5,7 +5,8 @@
     "assistant keys set openai \"$OPENAI_API_KEY\"",
     "assistant inference providers create openai-vlx0 --provider openai --auth api_key --credential credential/openai/api_key",
     "assistant inference profiles create vlx0-openai --provider openai --model gpt-5.6-luna --connection openai-vlx0 --label \"VLX-0 OpenAI\"",
-    "assistant inference profiles active vlx0-openai"
+    "assistant inference profiles active vlx0-openai",
+    "mkdir -p /workspace/data/vlx0-baseline && cp /workspace/IDENTITY.md /workspace/data/vlx0-baseline/IDENTITY.md && cp /workspace/SOUL.md /workspace/data/vlx0-baseline/SOUL.md"
   ],
   "branding": {
     "color": "#2E9A4E"
