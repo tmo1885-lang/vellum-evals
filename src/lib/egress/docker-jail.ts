@@ -21,6 +21,12 @@ export interface DockerEgressJailConfig {
   /** Hostnames allowed for outbound model traffic. */
   allowHosts?: string[];
   /**
+   * Use Docker's built-in bridge instead of creating a per-run user-defined
+   * network. Intended for local/container hosts where Docker embedded DNS on
+   * user-defined networks is unavailable. Default false.
+   */
+  useDefaultBridge?: boolean;
+  /**
    * Host-side run artifact directory. The recording mitmproxy sidecar
    * mounts this dir at `/recording` so usage records land in
    * `egress-usage.ndjson`. Required: evals always run with the recording
@@ -471,13 +477,16 @@ export async function applyDockerEgressJail(
   const recordingImage = config.recordingImage ?? DEFAULT_RECORDING_IMAGE;
   const dockerfileDir =
     config.recordingDockerfileDir ?? defaultRecordingDockerfileDir();
+  const useDefaultBridge = config.useDefaultBridge === true;
 
   await runner
     .run("docker", ["rm", "-f", jailContainer])
     .catch(() => undefined);
-  await runner
-    .run("docker", ["network", "rm", jailNetwork])
-    .catch(() => undefined);
+  if (!useDefaultBridge) {
+    await runner
+      .run("docker", ["network", "rm", jailNetwork])
+      .catch(() => undefined);
+  }
 
   const build = await runner.run("docker", [
     "build",
@@ -487,12 +496,14 @@ export async function applyDockerEgressJail(
   ]);
   assertSuccess(build, `build recording egress jail image ${recordingImage}`);
 
-  const network = await runner.run("docker", [
-    "network",
-    "create",
-    jailNetwork,
-  ]);
-  assertSuccess(network, `create egress jail network ${jailNetwork}`);
+  if (!useDefaultBridge) {
+    const network = await runner.run("docker", [
+      "network",
+      "create",
+      jailNetwork,
+    ]);
+    assertSuccess(network, `create egress jail network ${jailNetwork}`);
+  }
 
   const publishArgs = (config.publishPorts ?? []).flatMap((p) => [
     "-p",
@@ -514,7 +525,7 @@ export async function applyDockerEgressJail(
     "--name",
     jailContainer,
     "--network",
-    jailNetwork,
+    useDefaultBridge ? "bridge" : jailNetwork,
     "--cap-add",
     "NET_ADMIN",
     "--label",
@@ -556,9 +567,11 @@ export async function applyDockerEgressJail(
       await runner
         .run("docker", ["rm", "-f", jailContainer])
         .catch(() => undefined);
-      await runner
-        .run("docker", ["network", "rm", jailNetwork])
-        .catch(() => undefined);
+      if (!useDefaultBridge) {
+        await runner
+          .run("docker", ["network", "rm", jailNetwork])
+          .catch(() => undefined);
+      }
     },
   };
 }

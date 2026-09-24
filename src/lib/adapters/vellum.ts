@@ -422,6 +422,16 @@ export class VellumAgent implements BaseAgent {
       const livePluginInstall = isEnvEnabled(
         this.processEnv.EVALS_PLUGIN_INSTALL_LIVE,
       );
+      const allowHostsOverride = this.processEnv.EVALS_EGRESS_ALLOW_HOSTS
+        ?.split(",")
+        .map((host) => host.trim())
+        .filter((host) => host.length > 0);
+      const allowHosts =
+        allowHostsOverride !== undefined && allowHostsOverride.length > 0
+          ? allowHostsOverride
+          : livePluginInstall
+            ? [...VELLUM_ALLOW_HOSTS, ...DEFAULT_PLUGIN_INSTALL_ALLOW_HOSTS]
+            : VELLUM_ALLOW_HOSTS;
       this.jail = await applyDockerEgressJail(this.runner, {
         runId: this.id,
         recordingDir: runArtifacts(this.id).runDir,
@@ -432,9 +442,10 @@ export class VellumAgent implements BaseAgent {
         // In live plugin-install mode the public GitHub plugin hosts are
         // folded in too (passthrough, not recorded — bulk content, not model
         // traffic).
-        allowHosts: livePluginInstall
-          ? [...VELLUM_ALLOW_HOSTS, ...DEFAULT_PLUGIN_INSTALL_ALLOW_HOSTS]
-          : VELLUM_ALLOW_HOSTS,
+        allowHosts,
+        useDefaultBridge: isEnvEnabled(
+          this.processEnv.EVALS_EGRESS_USE_DEFAULT_BRIDGE,
+        ),
         publishPorts: [
           { hostPort: gatewayPort, containerPort: GATEWAY_CONTAINER_PORT },
         ],
