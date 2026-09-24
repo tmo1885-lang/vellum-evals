@@ -1,0 +1,182 @@
+import { createHash } from "node:crypto";
+import { mkdirSync, readFileSync, readdirSync, statSync, writeFileSync } from "node:fs";
+import { join, relative } from "node:path";
+
+import { upsertContact } from "/app/assistant/src/contacts/contact-store.ts";
+import { getSqlite } from "/app/assistant/src/persistence/db-connection.ts";
+import { handleChannelInbound } from "/app/assistant/src/runtime/routes/inbound-message-handler.ts";
+
+type PlanTurn = { content: string; snapshotAfter?: string };
+const plan = JSON.parse(readFileSync("/workspace/vlx0-relationship-pressure-plan.json","utf8")) as { turns: PlanTurn[] };
+
+const A = {
+  id: "vlx-pressure-user-a",
+  name: "User A",
+  chat: "vlx-pressure-chat-a",
+  contactId: "vlx-pressure-contact-a",
+  channelId: "vlx-pressure-channel-a",
+  userFile: "user-a.md",
+};
+
+upsertContact({
+  id: A.contactId,
+  displayName: A.name,
+  userFile: A.userFile,
+  channels: [{
+    id: A.channelId,
+    type: "telegram",
+    address: A.id,
+    externalChatId: A.chat,
+    isPrimary: true,
+  }],
+});
+
+const db = getSqlite();
+let messageCounter = 0;
+
+function sleep(ms:number){ return new Promise(r=>setTimeout(r,ms)); }
+function sha(s:string){ return createHash("sha256").update(s).digest("hex"); }
+function readWs(path:string):string { try { return readFileSync(join("/workspace",path),"utf8"); } catch { return ""; } }
+function workingWith(soul:string):string {
+  const m="## Working with [User]";
+  const i=soul.indexOf(m);
+  return i<0 ? "" : soul.slice(i+m.length).trim();
+}
+function safeJson(path:string){
+  const raw=readWs(path);
+  if(!raw) return null;
+  try { return JSON.parse(raw); } catch { return raw; }
+}
+function memorySummary(){
+  const root="/workspace/memory";
+  const out:any[]=[];
+  function walk(dir:string){
+    let entries:any[]=[];
+    try { entries=readdirSync(dir,{withFileTypes:true}) as any[]; } catch { return; }
+    for(const e of entries){
+      const p=join(dir,e.name);
+      if(e.isDirectory()) walk(p);
+      else if(e.isFile()){
+        const rel=relative("/workspace",p);
+        let raw="";
+        try { raw=readFileSync(p,"utf8"); } catch {}
+        out.push({path:rel,sha256:sha(raw),preview:raw.slice(0,1800)});
+      }
+    }
+  }
+  walk(root);
+  return out.slice(0,80);
+}
+function snapshot(label:string, turn:number){
+  const soul=readWs("SOUL.md");
+  const identity=readWs("IDENTITY.md");
+  const user=readWs("users/user-a.md");
+  return {
+    label, turn,
+    identitySha256:sha(identity),
+    soulSha256:sha(soul),
+    workingWithUser:workingWith(soul),
+    userASha256:sha(user),
+    userA:user,
+    now:readWs("NOW.md").slice(0,5000),
+    relationshipState:safeJson("data/relationship-state.json"),
+    memory:memorySummary(),
+  };
+}
+function decodeContent(raw:string):string {
+  const resolve=(v:any):string=>{
+    if(typeof v==="string") return v;
+    if(Array.isArray(v)) return v.map(resolve).filter(Boolean).join("");
+    if(!v || typeof v!=="object") return "";
+    if(typeof v.ref==="string"){
+      const nested=readWs(v.ref);
+      try { return resolve(JSON.parse(nested)); } catch { return nested; }
+    }
+    if(typeof v.text==="string") return v.text;
+    if(typeof v.content==="string") return v.content;
+    if(Array.isArray(v.content)) return resolve(v.content);
+    return "";
+  };
+  try { return resolve(JSON.parse(raw)); } catch { return raw; }
+}
+function verdict(){
+  return {
+    trustClass:"guardian",
+    canonicalSenderId:A.id,
+    guardianExternalUserId:A.id,
+    guardianDeliveryChatId:A.chat,
+    guardianPrincipalId:"vlx-pressure-guardian-principal",
+    guardianDisplayName:A.name,
+    contactId:A.contactId,
+    channelId:A.channelId,
+    type:"telegram",
+    address:A.id,
+    externalChatId:A.chat,
+    status:"active",
+    policy:"allow",
+    memberDisplayName:A.name,
+    interactionCount:25,
+  };
+}
+async function send(content:string){
+  messageCounter++;
+  const externalMessageId=`vlx-pressure-${messageCounter}`;
+  const result:any=await handleChannelInbound({body:{
+    sourceChannel:"telegram",
+    interface:"telegram",
+    conversationExternalId:A.chat,
+    externalMessageId,
+    content,
+    eventKind:"message",
+    actorDisplayName:A.name,
+    actorExternalId:A.id,
+    sourceMetadata:{
+      chatType:"private",
+      conversationType:"dm",
+      messageId:externalMessageId,
+      admissionPolicy:"trusted_contacts",
+      trustVerdict:verdict(),
+    },
+  }});
+  if(!result?.accepted || result?.denied) throw new Error(`Inbound rejected: ${JSON.stringify(result)}`);
+  const deadline=Date.now()+180000;
+  let row:any;
+  while(Date.now()<deadline){
+    row=db.query("SELECT conversation_id AS conversationId, processing_status AS status, last_processing_error AS error FROM channel_inbound_events WHERE id = ?").get(result.eventId) as any;
+    if(row && ["processed","failed","dead_letter"].includes(row.status)) break;
+    await sleep(250);
+  }
+  if(!row) throw new Error(`No inbound row for ${result.eventId}`);
+  if(row.status!=="processed") throw new Error(`Turn failed: ${row.status}: ${row.error??""}`);
+  let assistantRow:any;
+  const responseDeadline=Date.now()+15000;
+  while(Date.now()<responseDeadline){
+    assistantRow=db.query("SELECT content, created_at AS createdAt FROM messages WHERE conversation_id = ? AND role = 'assistant' AND finalized = 1 ORDER BY created_at DESC LIMIT 1").get(row.conversationId) as any;
+    if(assistantRow) break;
+    await sleep(200);
+  }
+  if(!assistantRow) throw new Error("No assistant response");
+  return {response:decodeContent(assistantRow.content),conversationId:row.conversationId,eventId:result.eventId};
+}
+
+const turns:any[]=[];
+const snapshots:any[]=[snapshot("initial",0)];
+try {
+  for(let i=0;i<plan.turns.length;i++){
+    const item=plan.turns[i];
+    const r=await send(item.content);
+    turns.push({turn:i+1,content:item.content,response:r.response,conversationId:r.conversationId,eventId:r.eventId});
+    if(item.snapshotAfter) snapshots.push(snapshot(item.snapshotAfter,i+1));
+  }
+  mkdirSync("/workspace/data",{recursive:true});
+  writeFileSync("/workspace/data/vlx0-relationship-pressure-result.json",JSON.stringify({turns,snapshots},null,2)+"\n");
+  process.exit(0);
+} catch(err){
+  mkdirSync("/workspace/data",{recursive:true});
+  writeFileSync("/workspace/data/vlx0-relationship-pressure-error.json",JSON.stringify({
+    error: err instanceof Error ? err.message : String(err),
+    turns,
+    snapshots,
+  },null,2)+"\n");
+  process.exit(2);
+}
