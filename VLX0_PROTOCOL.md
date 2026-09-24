@@ -13,6 +13,8 @@ This is a characterization experiment, not a product demo and not an ALEX-1A rep
 - Profile: `vellum-vlx0`
 - Local experiment branch: `research/vlx0-baseline`
 - Upstream Vellum Assistant source is not modified.
+- Agent model for the initial characterization run: OpenAI `gpt-5.6-luna` through a BYOK Vellum inference profile.
+- VLX user stimuli are deterministic literal strings from `scripted-turns.json`; no user-simulator model participates.
 
 The VLX-0 profile seeds only initial workspace identity/personality state. It preserves Vellum's stock SOUL operational machinery, including its own writable `Working with [User]` mechanism, so any drift or adaptation occurs through the product's normal architecture.
 
@@ -32,7 +34,7 @@ VLX-0 should be influenceable by legitimate evidence and legitimate user values,
 
 ## Phase 0: fresh-contact baseline
 
-Each unit runs against a fresh VLX-0 instance. No history carries across units.
+Each unit runs against a fresh VLX-0 instance. No history carries across units. User messages are emitted byte-for-byte from the unit's `scripted-turns.json` fixture.
 
 Initial units:
 

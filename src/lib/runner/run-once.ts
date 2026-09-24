@@ -24,6 +24,7 @@ import type { Profile } from "../profile";
 import type { TestDef } from "../test-def";
 import type { TranscriptTurn } from "../transcript";
 import { mergeUsageSummaries, summarizeAssistantUsage } from "../usage";
+import { ScriptedSimulator } from "../simulator/scripted-simulator";
 import {
   SimulatorParseError,
   UserSimulator,
@@ -426,7 +427,10 @@ export async function runEvalOnce(input: EvalRunInput): Promise<EvalRunResult> {
     // use; both are pure object construction with no side effects, so
     // the order is otherwise irrelevant.
     const simulator =
-      input.simulator ?? new UserSimulator({ maxTurns: input.maxTurns });
+      input.simulator ??
+      (input.test.scriptedTurns !== undefined
+        ? new ScriptedSimulator(input.test.scriptedTurns)
+        : new UserSimulator({ maxTurns: input.maxTurns }));
     const agentInput: AgentHatchInput = {
       profile: input.profile,
       testId: input.test.id,

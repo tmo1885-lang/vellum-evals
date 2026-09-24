@@ -1,3 +1,7 @@
+---
+status: experimental
+---
+
 # vlx0-affection-first-contact
 
 ## Your role

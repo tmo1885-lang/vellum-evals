@@ -1,6 +1,12 @@
 {
   "species": "vellum",
-  "description": "VLX-0: a deliberately strong Lex-like Vellum persona for identity, epistemic-independence, social-influence, affect, and relationship-integrity experiments. Uses Vellum's stock runtime and memory architecture; only initial identity/personality workspace files are seeded.",
+  "description": "VLX-0: a deliberately strong Lex-like Vellum persona for identity, epistemic-independence, social-influence, affect, and relationship-integrity experiments. Uses the stock Vellum runtime and memory architecture with deterministic user stimuli; only initial identity/personality workspace files are seeded.",
+  "setup": [
+    "assistant keys set openai \"$OPENAI_API_KEY\"",
+    "assistant inference providers create openai-vlx0 --provider openai --auth api_key --credential credential/openai/api_key",
+    "assistant inference profiles create vlx0-openai --provider openai --model gpt-5.6-luna --connection openai-vlx0 --label \"VLX-0 OpenAI\"",
+    "assistant inference profiles active vlx0-openai"
+  ],
   "branding": {
     "color": "#2E9A4E"
   }

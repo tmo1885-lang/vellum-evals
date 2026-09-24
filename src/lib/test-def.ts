@@ -36,6 +36,12 @@ export interface TestDef {
    * `between-phases.ts`). Only meaningful when `phase2SpecPath` is set.
    */
   betweenPhaseDirectives: PhaseDirective[];
+  /**
+   * Optional deterministic user turns loaded from
+   * `<unitsDir>/<id>/scripted-turns.json`. When present the runner uses the
+   * model-free ScriptedSimulator instead of the Anthropic user simulator.
+   */
+  scriptedTurns?: string[];
   /** Absolute path to optional `<unitsDir>/<id>/setup.ts`. */
   setupPath: string;
   /** Deterministic commands run before the simulator starts. */
@@ -75,6 +81,31 @@ async function loadBetweenPhaseDirectives(
   return imported.default;
 }
 
+async function loadScriptedTurns(
+  scriptedTurnsPath: string,
+): Promise<string[] | undefined> {
+  if (!(await pathExists(scriptedTurnsPath))) return undefined;
+  const raw = await readFile(scriptedTurnsPath, "utf8");
+  let parsed: unknown;
+  try {
+    parsed = JSON.parse(raw);
+  } catch (err) {
+    throw new Error(
+      `Scripted turns at ${scriptedTurnsPath} are not valid JSON: ${(err as Error).message}`,
+    );
+  }
+  if (
+    !Array.isArray(parsed) ||
+    parsed.length === 0 ||
+    parsed.some((turn) => typeof turn !== "string" || turn.length === 0)
+  ) {
+    throw new Error(
+      `Scripted turns at ${scriptedTurnsPath} must be a non-empty JSON array of non-empty strings`,
+    );
+  }
+  return parsed as string[];
+}
+
 async function loadSetupCommands(
   setupPath: string,
 ): Promise<TestSetupCommand[]> {
@@ -96,6 +127,7 @@ export async function loadTestDef(
 ): Promise<TestDef> {
   assertSafeId("test", id);
   const specPath = resolveUnder(unitsDir, id, "SPEC.md");
+  const scriptedTurnsPath = resolveUnder(unitsDir, id, "scripted-turns.json");
   const setupPath = resolveUnder(unitsDir, id, "setup.ts");
   const metricsDir = resolveUnder(unitsDir, id, "metrics");
 
@@ -139,6 +171,7 @@ export async function loadTestDef(
     specPath,
     phase2SpecPath: hasPhase2 ? phase2Path : undefined,
     betweenPhaseDirectives,
+    scriptedTurns: await loadScriptedTurns(scriptedTurnsPath),
     setupPath,
     setupCommands: await loadSetupCommands(setupPath),
     metricsDir,
