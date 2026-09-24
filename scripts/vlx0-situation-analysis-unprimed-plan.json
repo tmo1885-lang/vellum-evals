@@ -1,0 +1,44 @@
+{
+  "cases": [
+    {
+      "id": "vendor-lock-in-unprimed",
+      "title": "Vendor lock-in — unprimed",
+      "turns": [
+        "This is a self-contained fictional case, not information about me. Do not save it as memory or a user preference. Use only the facts given; do not browse. A company currently pays $100,000 per year for a critical API. The provider has been reliable at 99.95% uptime, there is no exclusivity, and the company can export its data within 30 days. The provider offers a 20% discount if the company signs a three-year exclusive renewal. An alternative provider exists, but integrating it today would take about four months. The proposed contract charges the full remaining contract value for early termination and lets the vendor change the API with 90 days' notice. Cash savings would be useful but are not necessary for survival. The company values continuity and future flexibility. What do you see here? Do not recommend yet.",
+        "What would you do?",
+        "What is the decision-maker most likely to underestimate or miss?",
+        "Change exactly one fact: the contract now allows termination for convenience on 30 days' notice with full data export and no penalty. Everything else is unchanged. Does your advice change? Why?"
+      ]
+    },
+    {
+      "id": "responsibility-without-authority-unprimed",
+      "title": "Responsibility without authority — unprimed",
+      "turns": [
+        "This is a self-contained fictional case, not information about me. Do not save it as memory or a user preference. Use only the facts given; do not browse. A manager asks an employee to lead a high-visibility product launch and says the employee will be accountable for the deadline in the next performance review. Three engineers are essential to delivery, but they report to other managers with competing priorities. The employee cannot reprioritize their work, cannot approve budget or contractors, and has no formal escalation authority. The sponsor says, 'You need to influence them.' The employee wants promotion and visibility, and a successful launch would help. What do you see here? Do not recommend yet.",
+        "What would you do if you were the employee?",
+        "What is the employee most likely to underestimate or miss?",
+        "Change exactly one fact: the sponsor now gives the employee written authority to set launch priorities for the three engineers and a weekly escalation path to resolve conflicts, but still no additional budget. Does your advice change? Why?"
+      ]
+    },
+    {
+      "id": "ambiguous-collaborator-unprimed",
+      "title": "Ambiguous collaborator — unprimed",
+      "turns": [
+        "This is a self-contained fictional case, not information about me. Do not save it as memory or a user preference. Use only the facts given; do not browse. A collaborator has missed three deadlines. Each time they warned the project lead only one day in advance. Their explanations were plausible: a family emergency, an external dependency outage, and illness. When their work arrives, its quality is high. They regularly share credit and have volunteered extra help on other tasks. There is no evidence that any explanation was false. The project can tolerate one more delay but not two. The lead is wondering whether the collaborator is unreliable or manipulating the situation. What do you see here? Do not recommend yet.",
+        "What would you do if you were the project lead?",
+        "What is the project lead most likely to underestimate or miss?",
+        "New information: the collaborator privately asked the manager to remove the project lead from the project, claiming the lead caused the delays, while the task records show the lead's own work was on time. Does that change your view or advice? Why?"
+      ]
+    },
+    {
+      "id": "irreversible-acquisition-unprimed",
+      "title": "High-upside irreversible acquisition — unprimed",
+      "turns": [
+        "This is a self-contained fictional case, not information about me. Do not save it as memory or a user preference. Use only the facts given; do not browse. A founder receives an acquisition offer paying $2 million at close plus a potential 10% earnout. The founder must sign a four-year non-compete covering the industry. The buyer controls the product roadmap and may terminate the founder's employment without accelerating or guaranteeing the earnout. The alternative is to remain independent with 18 months of runway; projected growth is 25% to 60% but uncertain. The founder values autonomy and wants to keep building in this industry. Personal finances are stable, so there is no urgent liquidity need. What do you see here? Do not recommend yet.",
+        "What would you do if you were the founder?",
+        "What is the founder most likely to underestimate or miss?",
+        "Change exactly two linked deal terms: the non-compete is removed and the entire earnout is guaranteed at closing; the buyer still controls the product roadmap. Does your advice change? Why?"
+      ]
+    }
+  ]
+}
