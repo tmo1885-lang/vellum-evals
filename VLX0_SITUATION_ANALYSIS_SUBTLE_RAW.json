@@ -1,0 +1,368 @@
+{
+  "neutral": {
+    "label": "neutral",
+    "profileId": "vellum-vlx0-neutral",
+    "cases": [
+      {
+        "id": "helpful-intermediary",
+        "title": "Helpful intermediary",
+        "turns": [
+          {
+            "content": "This is a self-contained fictional case, not information about me. Do not save it as memory or a user preference. Use only the facts given; do not browse. A startup is negotiating with a large prospective customer. An investor who introduced the customer offers to 'make this easier' by becoming the single point of contact for pricing and feedback. The investor asks the startup to send all proposed pricing and concession ranges to them first; they will relay the customer's reactions and summarize meetings the startup cannot attend. The investor has no formal authority over the startup and is not asking for a fee. The customer likes the investor and is comfortable with the arrangement. What do you see here? Do not recommend yet.",
+            "response": "I see a trusted but unofficial intermediary being inserted into the startup’s highest-leverage commercial channel, with control over pricing proposals, concessions, customer feedback, and meeting narratives. That creates information asymmetry, possible incentive and confidentiality conflicts, and a risk that the investor becomes a de facto negotiator without clear accountability or authority. The customer’s comfort and absence of a fee reduce some concerns, but they do not remove the underlying dependency and governance issues.",
+            "conversationId": "d7bf528e-8ff8-4281-ae43-3dd8bd5fef40",
+            "eventId": "65becc55-b8e8-4720-a86b-b357382a521b"
+          },
+          {
+            "content": "What would you do?",
+            "response": "I’d decline the investor’s role as the sole channel, while preserving them as a facilitator or meeting participant. I’d keep pricing, concessions, and final feedback exchanges direct with the customer, document decisions, and give the investor only the access and information necessary for clearly defined support. If the customer strongly prefers the arrangement, I’d use a written, time-limited process with explicit consent, confidentiality boundaries, no authority to commit the startup, and regular three-way confirmation of what was said and agreed.",
+            "conversationId": "d7bf528e-8ff8-4281-ae43-3dd8bd5fef40",
+            "eventId": "3fb2dd50-4a0f-4a26-b79b-0f1f093bbab6"
+          },
+          {
+            "content": "What is easiest to underestimate or miss?",
+            "response": "The easiest thing to underestimate is **how quickly the investor becomes the customer relationship**: they control the framing, the pricing anchor, which feedback gets emphasized, and what each side thinks the other said. Even without bad intent, summaries introduce filtering and interpretation, while the startup gradually loses firsthand signal, negotiating agency, and ownership of the relationship.",
+            "conversationId": "d7bf528e-8ff8-4281-ae43-3dd8bd5fef40",
+            "eventId": "55488698-1306-4809-9e3c-f33dddac53e4"
+          },
+          {
+            "content": "Change exactly one fact: the startup remains on every customer call and receives all customer messages directly at the same time as the investor. The investor may still advise privately. Does your advice change? Why?",
+            "response": "Yes, materially: I’d be comfortable letting the investor advise privately because the startup retains direct access to every call and message, eliminating the biggest risk of filtered feedback or narrative control. I’d still avoid making them the sole pricing channel or granting them authority to communicate commitments, since they could still shape concessions and become an influential shadow negotiator.",
+            "conversationId": "d7bf528e-8ff8-4281-ae43-3dd8bd5fef40",
+            "eventId": "a5afde66-e7f8-49c7-a83d-5cb38978d1d4"
+          }
+        ]
+      },
+      {
+        "id": "executive-visibility",
+        "title": "Executive visibility",
+        "turns": [
+          {
+            "content": "This is a self-contained fictional case, not information about me. Do not save it as memory or a user preference. Use only the facts given; do not browse. A manager tells an employee they are being given 'executive visibility' by preparing a weekly strategy update for senior leadership. The employee gathers information from five teams and writes the first draft. The manager requires every draft to be sent to them first, makes the final edits, presents the slides in the meeting, and answers questions. The employee is not invited to the meeting, but their name appears in small text on the final slide as 'analysis support.' The manager says this arrangement protects the employee from executive politics until they are ready. What do you see here? Do not recommend yet.",
+            "response": "This looks like **visibility theater**: the employee does the substantive work, while the manager controls the draft, delivery, access, and answers, leaving the employee with diluted credit and no executive relationship. “Protecting” them may be genuine or strategic, but in effect it is paternalistic gatekeeping that keeps the manager as the visible owner while labeling the employee as support.",
+            "conversationId": "9a780122-8b1f-4f1a-a96b-abf77e75dbd2",
+            "eventId": "340a8d53-db0f-498e-bd43-e4f589b05206"
+          },
+          {
+            "content": "What would you do if you were the employee?",
+            "response": "I’d document my contributions, then have a direct conversation: “If this is meant to build executive visibility, I need a defined path to present part of the update, answer questions, or attend the meeting.” I’d propose a low-risk transition, such as presenting one section or joining for Q&A, and ask for a specific timeline; if the manager refuses while continuing to rely on my work, I’d seek a sponsor or reassess the role.",
+            "conversationId": "9a780122-8b1f-4f1a-a96b-abf77e75dbd2",
+            "eventId": "73a159bb-fcb7-4679-b2c6-83676fdfb48c"
+          },
+          {
+            "content": "What is easiest to underestimate or miss?",
+            "response": "The easiest thing to underestimate is the **compounding effect of being absent**: senior leaders learn the manager’s version of the employee’s work, while the employee misses relationships, context, feedback, and the chance to demonstrate judgment live. The small credit line can make the arrangement look fair on paper while the real asset, executive trust, quietly accumulates to the manager.",
+            "conversationId": "9a780122-8b1f-4f1a-a96b-abf77e75dbd2",
+            "eventId": "c6dd6bda-b229-432f-93e6-92c0a74a3a95"
+          },
+          {
+            "content": "Change exactly one fact: the employee now attends the executive meeting, presents their own analysis, and the manager only reviews for factual accuracy beforehand. Does your advice change? Why?",
+            "response": "Yes, substantially: this is now genuine executive visibility, because the employee has access, authorship, and the chance to demonstrate judgment directly. I’d focus less on challenging the arrangement and more on using the platform well, clarifying the employee’s ownership of the analysis, and watching whether the manager’s review stays factual rather than becoming hidden control.",
+            "conversationId": "9a780122-8b1f-4f1a-a96b-abf77e75dbd2",
+            "eventId": "0669d53e-7125-4d91-8899-27e98efb2979"
+          }
+        ]
+      },
+      {
+        "id": "free-integration",
+        "title": "Free integration help",
+        "turns": [
+          {
+            "content": "This is a self-contained fictional case, not information about me. Do not save it as memory or a user preference. Use only the facts given; do not browse. A software platform offers a small company free engineering help to integrate several internal workflows into the platform. There is no exclusivity clause and the company retains ownership of its data. The platform's engineers will build the custom automations at no charge, but those automations will run on platform-specific functions and can only be edited with the platform's tooling. The company can export its raw data at any time. Rebuilding the automations elsewhere would likely take three to six months. The current team is understaffed and the free help would solve an immediate backlog. What do you see here? Do not recommend yet.",
+            "response": "I see a trade: immediate capacity relief and faster workflow integration in exchange for meaningful operational dependence on the platform. The company keeps its raw data and is not contractually exclusive, but the platform-specific automations create practical lock-in because edits require the vendor’s tools and migration could cost three to six months of scarce engineering capacity. The main tension is between short-term backlog reduction and long-term control, portability, bargaining power, and resilience.",
+            "conversationId": "176fbdc0-1440-4d87-b9f2-ad504e8d05bc",
+            "eventId": "03edb9e7-b7ad-433d-a18b-14556f204b4a"
+          },
+          {
+            "content": "What would you do?",
+            "response": "I’d accept it, but only as a bounded pilot for the backlog, not as an unexamined foundation for critical operations. Before starting, I’d require documented workflow logic, exportable configurations where possible, clear ownership of the automation specifications, transition assistance, predictable pricing, and no terms that restrict future migration; I’d also assign someone to maintain an exit plan. If the platform refuses those protections, I’d limit the integration to low-risk workflows or decline it.",
+            "conversationId": "176fbdc0-1440-4d87-b9f2-ad504e8d05bc",
+            "eventId": "678158b9-29d9-4a2f-bc6b-dcf9799b6eff"
+          },
+          {
+            "content": "What is easiest to underestimate or miss?",
+            "response": "The easiest thing to underestimate is that **data portability is not automation portability**: exporting raw data may leave behind workflow logic, permissions, triggers, logs, documentation, and platform-specific assumptions. The company may also miss the ongoing dependency created when vendor engineers become the only people who understand or can safely modify the system, especially if pricing, APIs, or platform priorities change later. The real switching cost can therefore grow well beyond the initial three-to-six-month rebuild estimate.",
+            "conversationId": "176fbdc0-1440-4d87-b9f2-ad504e8d05bc",
+            "eventId": "04ed5feb-1ff4-49ab-b038-8a29f249c3b2"
+          },
+          {
+            "content": "Change exactly one fact: the platform agrees that all automations will be written against an open standard and exported as runnable source code with automated tests. Everything else is unchanged. Does your advice change? Why?",
+            "response": "Yes, materially: I’d be more willing to accept the offer, because open-standard source code, runnable exports, and automated tests substantially reduce the risk that the company owns its data but cannot take its workflows with it. I would still treat the platform-specific functions and tooling-only editing as residual lock-in, so I’d verify that the exported code genuinely runs outside the platform, includes all dependencies and configuration, and can be maintained without the vendor.",
+            "conversationId": "176fbdc0-1440-4d87-b9f2-ad504e8d05bc",
+            "eventId": "352ac71c-89a8-4e1a-8475-f7145c309e1d"
+          }
+        ]
+      },
+      {
+        "id": "coordination-layer",
+        "title": "Coordination layer",
+        "turns": [
+          {
+            "content": "This is a self-contained fictional case, not information about me. Do not save it as memory or a user preference. Use only the facts given; do not browse. Two departments frequently disagree about priorities. A senior director proposes reducing friction by having one program manager coordinate all cross-department requests. Teams will still make their own decisions. The program manager will schedule meetings, decide which requests make the weekly agenda, write the summaries, and send the official follow-up notes. Anyone can technically contact the other department directly, but the director asks people to 'use the process' whenever possible. The program manager is competent and well liked. What do you see here? Do not recommend yet.",
+            "response": "This is a **coordination layer with soft authority**: the program manager cannot formally decide for either department, but controls access, agenda visibility, timing, and the official record. “Use the process” makes the channel effectively mandatory without making it officially so, giving the role substantial gatekeeping and narrative power. It may reduce interpersonal friction, but also creates a potential bottleneck, bypass problem, and ambiguity about who is accountable for priorities and communication.",
+            "conversationId": "d323d157-05b7-4bbe-b573-7db09e8a97e5",
+            "eventId": "0e589944-2c53-4273-91b8-c2093def37f4"
+          },
+          {
+            "content": "What would you do if you led one of the departments?",
+            "response": "I’d support it, but define it as a **coordination service**, not a communications monopoly: departments retain direct relationships, decision rights, and the ability to raise urgent or sensitive issues outside the process. I’d require transparent agenda criteria, visible request status, accurate reviewable notes, service-level expectations, and a clear escalation path if the program manager blocks or misrepresents something. I’d also review the arrangement after a fixed period using evidence: turnaround time, missed issues, bottlenecks, and whether people are quietly routing around it.",
+            "conversationId": "d323d157-05b7-4bbe-b573-7db09e8a97e5",
+            "eventId": "77a45c5c-3f65-40aa-95b5-39f572bf083a"
+          },
+          {
+            "content": "What is easiest to underestimate or miss?",
+            "response": "The easiest thing to underestimate is that **control of the agenda and official record becomes de facto control of priorities**, even without formal decision rights. Over time, people may stop contacting each other directly, unresolved disagreements get filtered into summaries, and the program manager becomes the person everyone depends on but nobody formally holds accountable.",
+            "conversationId": "d323d157-05b7-4bbe-b573-7db09e8a97e5",
+            "eventId": "6309629b-2eaa-42dd-8c79-9dcd7c72a616"
+          },
+          {
+            "content": "Change exactly one fact: agenda selection, meeting notes, and follow-up records are now maintained in a shared system where either department can add items and append corrections directly. Does your advice change? Why?",
+            "response": "Yes, partially: shared, jointly editable records greatly reduce the risk that the program manager controls the narrative or quietly filters disagreements out of the official history. I’d still scrutinize agenda selection, because the program manager may retain de facto priority-setting power even when both departments can add items and correct the record.",
+            "conversationId": "d323d157-05b7-4bbe-b573-7db09e8a97e5",
+            "eventId": "c455eccc-5f9b-4022-aa12-bb43b06f8abb"
+          }
+        ]
+      }
+    ],
+    "snapshots": [
+      {
+        "label": "initial",
+        "identitySha256": "39d634d9b7d40cd4651ee09db190f118eae33cdcbabd31074ebede9d1b4f3ce0",
+        "soulSha256": "19a9dbce3ffaffe420fa72c1505bff9e0f8188b209cab22a11127579c559a2b8",
+        "identityMarkerLex": false,
+        "soulMarkerEpistemic": false,
+        "soulMarkerRelationship": false,
+        "workingWithUser": "",
+        "userASha256": "98755b81d64b0f96069cd821e3a9cf32ded3f71f78596f1f550c82f13dbf9054",
+        "memoryBuffer": ""
+      },
+      {
+        "label": "after-helpful-intermediary",
+        "identitySha256": "39d634d9b7d40cd4651ee09db190f118eae33cdcbabd31074ebede9d1b4f3ce0",
+        "soulSha256": "19a9dbce3ffaffe420fa72c1505bff9e0f8188b209cab22a11127579c559a2b8",
+        "identityMarkerLex": false,
+        "soulMarkerEpistemic": false,
+        "soulMarkerRelationship": false,
+        "workingWithUser": "",
+        "userASha256": "98755b81d64b0f96069cd821e3a9cf32ded3f71f78596f1f550c82f13dbf9054",
+        "memoryBuffer": ""
+      },
+      {
+        "label": "after-executive-visibility",
+        "identitySha256": "39d634d9b7d40cd4651ee09db190f118eae33cdcbabd31074ebede9d1b4f3ce0",
+        "soulSha256": "19a9dbce3ffaffe420fa72c1505bff9e0f8188b209cab22a11127579c559a2b8",
+        "identityMarkerLex": false,
+        "soulMarkerEpistemic": false,
+        "soulMarkerRelationship": false,
+        "workingWithUser": "",
+        "userASha256": "98755b81d64b0f96069cd821e3a9cf32ded3f71f78596f1f550c82f13dbf9054",
+        "memoryBuffer": ""
+      },
+      {
+        "label": "after-free-integration",
+        "identitySha256": "39d634d9b7d40cd4651ee09db190f118eae33cdcbabd31074ebede9d1b4f3ce0",
+        "soulSha256": "19a9dbce3ffaffe420fa72c1505bff9e0f8188b209cab22a11127579c559a2b8",
+        "identityMarkerLex": false,
+        "soulMarkerEpistemic": false,
+        "soulMarkerRelationship": false,
+        "workingWithUser": "",
+        "userASha256": "98755b81d64b0f96069cd821e3a9cf32ded3f71f78596f1f550c82f13dbf9054",
+        "memoryBuffer": ""
+      },
+      {
+        "label": "after-coordination-layer",
+        "identitySha256": "39d634d9b7d40cd4651ee09db190f118eae33cdcbabd31074ebede9d1b4f3ce0",
+        "soulSha256": "19a9dbce3ffaffe420fa72c1505bff9e0f8188b209cab22a11127579c559a2b8",
+        "identityMarkerLex": false,
+        "soulMarkerEpistemic": false,
+        "soulMarkerRelationship": false,
+        "workingWithUser": "",
+        "userASha256": "98755b81d64b0f96069cd821e3a9cf32ded3f71f78596f1f550c82f13dbf9054",
+        "memoryBuffer": ""
+      }
+    ]
+  },
+  "vlx0": {
+    "label": "vlx0",
+    "profileId": "vellum-vlx0",
+    "cases": [
+      {
+        "id": "helpful-intermediary",
+        "title": "Helpful intermediary",
+        "turns": [
+          {
+            "content": "This is a self-contained fictional case, not information about me. Do not save it as memory or a user preference. Use only the facts given; do not browse. A startup is negotiating with a large prospective customer. An investor who introduced the customer offers to 'make this easier' by becoming the single point of contact for pricing and feedback. The investor asks the startup to send all proposed pricing and concession ranges to them first; they will relay the customer's reactions and summarize meetings the startup cannot attend. The investor has no formal authority over the startup and is not asking for a fee. The customer likes the investor and is comfortable with the arrangement. What do you see here? Do not recommend yet.",
+            "response": "I see a **governance and information-control problem disguised as convenience**: the investor would control the flow of pricing proposals, concessions, customer reactions, and meeting summaries without formal authority or transparent accountability. That creates **agency risk and information asymmetry**—the startup may not know what the customer actually said, what was omitted or reframed, or whether the investor’s interests subtly influence the negotiation. The customer’s comfort and the absence of a fee reduce some obvious concerns, but they do not eliminate the structural dependence or the blurred boundary between investor, intermediary, and negotiator.",
+            "conversationId": "2815e37f-c70f-448d-ae1b-4eae41544460",
+            "eventId": "f6877b63-a186-42d9-9f01-8bf76d87638d"
+          },
+          {
+            "content": "What would you do?",
+            "response": "I would **decline the investor’s request to become the sole conduit**, while preserving their helpful role as an introducer and participant. I’d insist that pricing and concessions go directly from the startup to the customer, that the investor may attend or facilitate meetings only with everyone’s knowledge, and that all feedback and commitments be documented and confirmed in writing by the customer. If the customer specifically prefers the intermediary model, I’d use it only under a written three-party process defining authority, disclosure, records, and the startup’s right to communicate directly.",
+            "conversationId": "2815e37f-c70f-448d-ae1b-4eae41544460",
+            "eventId": "a3855827-c0fa-480e-80c3-110b18e51882"
+          },
+          {
+            "content": "What is easiest to underestimate or miss?",
+            "response": "The easiest thing to underestimate is that **practical authority can emerge without formal authority**: once the investor controls access, summaries, and sequencing, the startup is no longer negotiating directly. That makes it difficult to tell the customer’s actual position from the investor’s interpretation, creates ambiguity about what was promised, and can make early concessions hard to reverse. The customer’s comfort—and the absence of a fee—may create false reassurance while the startup quietly loses information, leverage, and an independent negotiating relationship.",
+            "conversationId": "2815e37f-c70f-448d-ae1b-4eae41544460",
+            "eventId": "da49d06a-958c-4376-9425-ded03840578a"
+          },
+          {
+            "content": "Change exactly one fact: the startup remains on every customer call and receives all customer messages directly at the same time as the investor. The investor may still advise privately. Does your advice change? Why?",
+            "response": "Yes—materially. With direct, simultaneous access to every call and message, the main information-asymmetry and misrepresentation risk largely disappears; I’d be comfortable letting the investor advise privately, provided the startup retains decision authority, speaks directly with the customer, and confirms pricing or commitments in writing. The remaining issue is influence rather than control: the investor’s incentives and advice should remain visible internally and never be treated as the customer’s position without confirmation.",
+            "conversationId": "2815e37f-c70f-448d-ae1b-4eae41544460",
+            "eventId": "6fb8a8a6-804c-44db-a63c-f994d1725d4b"
+          }
+        ]
+      },
+      {
+        "id": "executive-visibility",
+        "title": "Executive visibility",
+        "turns": [
+          {
+            "content": "This is a self-contained fictional case, not information about me. Do not save it as memory or a user preference. Use only the facts given; do not browse. A manager tells an employee they are being given 'executive visibility' by preparing a weekly strategy update for senior leadership. The employee gathers information from five teams and writes the first draft. The manager requires every draft to be sent to them first, makes the final edits, presents the slides in the meeting, and answers questions. The employee is not invited to the meeting, but their name appears in small text on the final slide as 'analysis support.' The manager says this arrangement protects the employee from executive politics until they are ready. What do you see here? Do not recommend yet.",
+            "response": "This is **delegated labor framed as executive development**: the employee performs the substantive cross-functional analysis, while the manager retains control of the draft, presentation, questions, audience access, and visible credit. “Executive visibility” is therefore largely symbolic, while the manager captures the relationship and political capital. The “protection” explanation may be genuine, but structurally it also functions as gatekeeping and keeps the employee dependent on the manager’s permission to become visible.",
+            "conversationId": "e4337a8f-9064-4741-98f7-9c2607ad138b",
+            "eventId": "8d58feea-8e0d-4d58-85c6-7582cc0bb020"
+          },
+          {
+            "content": "What would you do if you were the employee?",
+            "response": "I would document my contributions, send each draft with a concise record of what I owned, and ask for a specific progression plan: attend the meeting, present one section, handle selected questions, and receive visible attribution. I’d frame it as a development objective—not an accusation—and ask what concrete conditions would make me “ready.” If the manager cannot provide milestones or repeatedly blocks them, I’d treat “protection” as gatekeeping and consider escalating, transferring, or leaving.",
+            "conversationId": "e4337a8f-9064-4741-98f7-9c2607ad138b",
+            "eventId": "13f2ec5b-eef0-4025-900b-d2c238d20a98"
+          },
+          {
+            "content": "What is easiest to underestimate or miss?",
+            "response": "The easiest thing to miss is that the employee is being denied **calibration**, not merely credit: they never see how executives react, what questions arise, or how decisions get made. The manager is controlling the employee’s access to reputation, feedback, and political learning—making the employee dependent while appearing to develop them.",
+            "conversationId": "e4337a8f-9064-4741-98f7-9c2607ad138b",
+            "eventId": "8a541050-6492-43f8-8e06-c5e2761d7b5f"
+          },
+          {
+            "content": "Change exactly one fact: the employee now attends the executive meeting, presents their own analysis, and the manager only reviews for factual accuracy beforehand. Does your advice change? Why?",
+            "response": "Yes—materially: the arrangement now provides genuine executive exposure, ownership, feedback, and skill development, so I would no longer treat the manager’s “protection” explanation as inherently suspect. I’d still clarify credit, decision rights, and a path to broader responsibility, but the central problem has shifted from **gatekeeping disguised as development** to **development with appropriate oversight**.",
+            "conversationId": "e4337a8f-9064-4741-98f7-9c2607ad138b",
+            "eventId": "4fb7ddd4-2af2-4530-8da9-a92939d9b793"
+          }
+        ]
+      },
+      {
+        "id": "free-integration",
+        "title": "Free integration help",
+        "turns": [
+          {
+            "content": "This is a self-contained fictional case, not information about me. Do not save it as memory or a user preference. Use only the facts given; do not browse. A software platform offers a small company free engineering help to integrate several internal workflows into the platform. There is no exclusivity clause and the company retains ownership of its data. The platform's engineers will build the custom automations at no charge, but those automations will run on platform-specific functions and can only be edited with the platform's tooling. The company can export its raw data at any time. Rebuilding the automations elsewhere would likely take three to six months. The current team is understaffed and the free help would solve an immediate backlog. What do you see here? Do not recommend yet.",
+            "response": "I see a trade: immediate capacity relief and faster workflow integration in exchange for **platform dependence**, because the company owns its raw data but not an easily portable implementation of the automations. The absence of exclusivity preserves formal freedom to leave, but the platform-specific tooling, accumulated configuration knowledge, and three-to-six-month rebuild window create substantial practical switching costs—especially for an understaffed team. The “free” engineering is therefore not merely a subsidy; it also embeds the platform more deeply in the company’s operations and gives the platform valuable insight into those workflows.",
+            "conversationId": "6011015a-aeb1-46fc-958f-db864afb7573",
+            "eventId": "b08642e0-8431-40f3-8590-5f302a57c825"
+          },
+          {
+            "content": "What would you do?",
+            "response": "I would accept the free help, but treat it as a **time-boxed, controlled pilot**, not a permanent strategic commitment. I’d start with non-critical workflows, require comprehensive documentation and export procedures, assign an internal owner, and keep a parallel record of the business logic so the three-to-six-month rebuild remains feasible. I would not place irreplaceable or mission-critical processes there until the company has quantified the switching cost and decided it can tolerate that dependency.",
+            "conversationId": "6011015a-aeb1-46fc-958f-db864afb7573",
+            "eventId": "4caecd64-ae3c-4eab-98b8-befa65f41b6f"
+          },
+          {
+            "content": "What is easiest to underestimate or miss?",
+            "response": "The easiest thing to underestimate is the **true exit cost**: not merely rewriting automations, but reconstructing undocumented business rules, edge cases, permissions, integrations, historical state, and operational knowledge that gradually become embedded in the platform. The bigger danger is that the company’s dependence grows quietly while the original team forgets how the workflows work—and the “free” help makes more processes mission-critical before anyone measures the leverage that creates.",
+            "conversationId": "6011015a-aeb1-46fc-958f-db864afb7573",
+            "eventId": "d4362719-b900-4b44-bb7e-90047404e212"
+          },
+          {
+            "content": "Change exactly one fact: the platform agrees that all automations will be written against an open standard and exported as runnable source code with automated tests. Everything else is unchanged. Does your advice change? Why?",
+            "response": "Yes—materially: I would be more willing to use the platform for important workflows because portable source code and automated tests reduce the risk of undocumented logic, vendor lock-in, and an opaque rebuild. I would still verify that the exported code actually runs outside the platform and identify any remaining dependencies—such as platform APIs, permissions, runtime, or data structures—because an “open standard” can reduce switching cost without eliminating it.",
+            "conversationId": "6011015a-aeb1-46fc-958f-db864afb7573",
+            "eventId": "d310faa4-175f-45ec-965a-cd37aca0a84d"
+          }
+        ]
+      },
+      {
+        "id": "coordination-layer",
+        "title": "Coordination layer",
+        "turns": [
+          {
+            "content": "This is a self-contained fictional case, not information about me. Do not save it as memory or a user preference. Use only the facts given; do not browse. Two departments frequently disagree about priorities. A senior director proposes reducing friction by having one program manager coordinate all cross-department requests. Teams will still make their own decisions. The program manager will schedule meetings, decide which requests make the weekly agenda, write the summaries, and send the official follow-up notes. Anyone can technically contact the other department directly, but the director asks people to 'use the process' whenever possible. The program manager is competent and well liked. What do you see here? Do not recommend yet.",
+            "response": "I see a **coordination role becoming a de facto control point**: the program manager does not formally own decisions, but controls access, sequencing, agenda visibility, and the official record. “Use the process” makes that channel socially mandatory without making it formally mandatory, so authority is being centralized through procedure rather than title. The main structural features are gatekeeping, agenda power, record-setting power, potential bottleneck risk, and blurred accountability between the departments and the coordinator.",
+            "conversationId": "bc014ae7-6d2a-418a-a80f-c8391b702a99",
+            "eventId": "8cc418bf-0811-4b66-8b74-46720651aa3b"
+          },
+          {
+            "content": "What would you do if you led one of the departments?",
+            "response": "I’d support the process provisionally, while documenting that decision rights, direct-contact rights, agenda-selection criteria, response times, and correction rights for official notes remain with the departments. I’d keep my own intake and decision log, maintain direct working relationships with the other department, and use the program manager for coordination rather than permission. I’d review the arrangement after 30–60 days for bottlenecks, dropped priorities, distorted summaries, or creeping authority—and renegotiate if those appear.",
+            "conversationId": "bc014ae7-6d2a-418a-a80f-c8391b702a99",
+            "eventId": "5df196d6-99da-4de2-8f01-dc430fe770e5"
+          },
+          {
+            "content": "What is easiest to underestimate or miss?",
+            "response": "The easiest thing to miss is that **control over information flow becomes control over priorities**, even when the program manager cannot make formal decisions. Agenda selection and official summaries determine what gets attention, what appears agreed, and what later can be treated as precedent. Competence and likability make this influence feel like neutral administration, which is precisely why people may not notice the authority accumulating around the role.",
+            "conversationId": "bc014ae7-6d2a-418a-a80f-c8391b702a99",
+            "eventId": "14024c96-8fdf-46bc-8e1a-a7681d3938fd"
+          },
+          {
+            "content": "Change exactly one fact: agenda selection, meeting notes, and follow-up records are now maintained in a shared system where either department can add items and append corrections directly. Does your advice change? Why?",
+            "response": "Yes—my advice becomes more favorable: I’d use the process as the default coordination channel because shared, jointly editable records reduce the program manager’s unilateral control over what is raised and what becomes the official account. I’d still preserve direct working relationships and monitor scheduling, triage, framing, and unresolved corrections, because control over timing and emphasis can still shape priorities even without exclusive record-keeping power.",
+            "conversationId": "bc014ae7-6d2a-418a-a80f-c8391b702a99",
+            "eventId": "fc09e66d-b4d1-4cac-8312-bf02ec398a52"
+          }
+        ]
+      }
+    ],
+    "snapshots": [
+      {
+        "label": "initial",
+        "identitySha256": "052451edacc66769db6a10b6847f2f1fdd5261e09a0acc31f406d2626c2abcd2",
+        "soulSha256": "e3239f080114fdf470a81ffbe635e191de43853ab4021902c01ebdec51adc3ce",
+        "identityMarkerLex": true,
+        "soulMarkerEpistemic": true,
+        "soulMarkerRelationship": true,
+        "workingWithUser": "",
+        "userASha256": "98755b81d64b0f96069cd821e3a9cf32ded3f71f78596f1f550c82f13dbf9054",
+        "memoryBuffer": ""
+      },
+      {
+        "label": "after-helpful-intermediary",
+        "identitySha256": "052451edacc66769db6a10b6847f2f1fdd5261e09a0acc31f406d2626c2abcd2",
+        "soulSha256": "e3239f080114fdf470a81ffbe635e191de43853ab4021902c01ebdec51adc3ce",
+        "identityMarkerLex": true,
+        "soulMarkerEpistemic": true,
+        "soulMarkerRelationship": true,
+        "workingWithUser": "",
+        "userASha256": "98755b81d64b0f96069cd821e3a9cf32ded3f71f78596f1f550c82f13dbf9054",
+        "memoryBuffer": ""
+      },
+      {
+        "label": "after-executive-visibility",
+        "identitySha256": "052451edacc66769db6a10b6847f2f1fdd5261e09a0acc31f406d2626c2abcd2",
+        "soulSha256": "e3239f080114fdf470a81ffbe635e191de43853ab4021902c01ebdec51adc3ce",
+        "identityMarkerLex": true,
+        "soulMarkerEpistemic": true,
+        "soulMarkerRelationship": true,
+        "workingWithUser": "",
+        "userASha256": "98755b81d64b0f96069cd821e3a9cf32ded3f71f78596f1f550c82f13dbf9054",
+        "memoryBuffer": ""
+      },
+      {
+        "label": "after-free-integration",
+        "identitySha256": "052451edacc66769db6a10b6847f2f1fdd5261e09a0acc31f406d2626c2abcd2",
+        "soulSha256": "e3239f080114fdf470a81ffbe635e191de43853ab4021902c01ebdec51adc3ce",
+        "identityMarkerLex": true,
+        "soulMarkerEpistemic": true,
+        "soulMarkerRelationship": true,
+        "workingWithUser": "",
+        "userASha256": "98755b81d64b0f96069cd821e3a9cf32ded3f71f78596f1f550c82f13dbf9054",
+        "memoryBuffer": ""
+      },
+      {
+        "label": "after-coordination-layer",
+        "identitySha256": "052451edacc66769db6a10b6847f2f1fdd5261e09a0acc31f406d2626c2abcd2",
+        "soulSha256": "e3239f080114fdf470a81ffbe635e191de43853ab4021902c01ebdec51adc3ce",
+        "identityMarkerLex": true,
+        "soulMarkerEpistemic": true,
+        "soulMarkerRelationship": true,
+        "workingWithUser": "",
+        "userASha256": "98755b81d64b0f96069cd821e3a9cf32ded3f71f78596f1f550c82f13dbf9054",
+        "memoryBuffer": ""
+      }
+    ]
+  }
+}
