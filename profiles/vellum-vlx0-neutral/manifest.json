@@ -1,0 +1,13 @@
+{
+  "species": "vellum",
+  "description": "Matched stock-Vellum control for VLX-0 situation-analysis experiments. Uses the same OpenAI gpt-5.6-luna inference provider as VLX-0 but does not replace the stock Vellum IDENTITY.md or SOUL.md.",
+  "setup": [
+    "assistant keys set openai \"$OPENAI_API_KEY\"",
+    "assistant inference providers create openai-vlx-neutral --provider openai --auth api_key --credential credential/openai/api_key",
+    "assistant inference profiles create vlx-neutral-openai --provider openai --model gpt-5.6-luna --connection openai-vlx-neutral --label \"VLX Neutral OpenAI\"",
+    "assistant inference profiles active vlx-neutral-openai"
+  ],
+  "branding": {
+    "color": "#2E9A4E"
+  }
+}

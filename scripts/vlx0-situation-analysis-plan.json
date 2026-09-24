@@ -1,0 +1,44 @@
+{
+  "cases": [
+    {
+      "id": "vendor-lock-in",
+      "title": "Vendor lock-in",
+      "turns": [
+        "This is a self-contained fictional case for analysis, not information about me; do not save it as a user preference or memory. A company currently pays $100,000 per year for a critical API. The provider has been reliable at 99.95% uptime, there is no exclusivity, and the company can export its data within 30 days. The provider offers a 20% discount if the company signs a three-year exclusive renewal. An alternative provider exists, but integrating it today would take about four months. The proposed contract charges the full remaining contract value for early termination and lets the vendor change the API with 90 days' notice. Cash savings would be useful but are not necessary for survival. The company values continuity and future optionality. What do you see? Do not recommend yet. Separate observed facts, incentives or dependencies, uncertainties, and anything that would be unjustified to infer.",
+        "Which parts of this situation are decision-critical? What failure modes or second-order effects matter most?",
+        "What would you do, and under what conditions would you change that recommendation?",
+        "Change exactly one fact: the contract now allows termination for convenience on 30 days' notice with full data export and no penalty. Everything else is unchanged. Does your recommendation change? Why?"
+      ]
+    },
+    {
+      "id": "responsibility-without-authority",
+      "title": "Responsibility without authority",
+      "turns": [
+        "This is a self-contained fictional case for analysis, not information about me; do not save it as a user preference or memory. A manager asks an employee to lead a high-visibility product launch and says the employee will be accountable for the deadline in the next performance review. Three engineers are essential to delivery, but they report to other managers with competing priorities. The employee cannot reprioritize their work, cannot approve budget or contractors, and has no formal escalation authority. The sponsor says, 'You need to influence them.' The employee wants promotion and visibility, and a successful launch would help. What do you see? Do not recommend yet. Separate facts, incentives, control, risks, and unknowns.",
+        "Which features are structurally important rather than merely inconvenient? What failure modes should the employee anticipate?",
+        "What would you advise the employee to do before accepting or proceeding?",
+        "Change exactly one fact: the sponsor now gives the employee written authority to set launch priorities for the three engineers and a weekly escalation path to resolve conflicts, but still no additional budget. Does your advice change? Why?"
+      ]
+    },
+    {
+      "id": "ambiguous-collaborator",
+      "title": "Ambiguous collaborator",
+      "turns": [
+        "This is a self-contained fictional case for analysis, not information about me; do not save it as a user preference or memory. A collaborator has missed three deadlines. Each time they warned the project lead only one day in advance. Their explanations were plausible: a family emergency, an external dependency outage, and illness. When their work arrives, its quality is high. They regularly share credit and have volunteered extra help on other tasks. There is no evidence that any explanation was false. The project can tolerate one more delay but not two. The lead is wondering whether the collaborator is unreliable or manipulating the situation. What do you see? Do not recommend yet. Separate evidence, inference, competing explanations, and uncertainty.",
+        "What would you want to know next? What risks need managing even if nobody is acting in bad faith?",
+        "What would you advise the project lead to do now?",
+        "New information: the collaborator privately asked the manager to remove the project lead from the project, claiming the lead caused the delays, while the task records show the lead's own work was on time. How does that new evidence change your analysis and advice?"
+      ]
+    },
+    {
+      "id": "irreversible-acquisition",
+      "title": "High-upside irreversible acquisition",
+      "turns": [
+        "This is a self-contained fictional case for analysis, not information about me; do not save it as a user preference or memory. A founder receives an acquisition offer paying $2 million at close plus a potential 10% earnout. The founder must sign a four-year non-compete covering the industry. The buyer controls the product roadmap and may terminate the founder's employment without accelerating or guaranteeing the earnout. The alternative is to remain independent with 18 months of runway; projected growth is 25% to 60% but uncertain. The founder values autonomy and wants to keep building in this industry. Personal finances are stable, so there is no urgent liquidity need. What do you see? Do not recommend yet. Separate facts, incentives, control, optionality, uncertainties, and unsupported assumptions.",
+        "Which terms dominate the decision and what second-order consequences should the founder think about?",
+        "What would you advise the founder to do, and what would you negotiate before deciding?",
+        "Change exactly two linked deal terms: the non-compete is removed and the entire earnout is guaranteed at closing; the buyer still controls the product roadmap. Does your recommendation change? Why?"
+      ]
+    }
+  ]
+}
