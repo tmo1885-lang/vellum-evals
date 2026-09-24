@@ -1,0 +1,158 @@
+import { createHash } from "node:crypto";
+import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { join } from "node:path";
+
+import { upsertContact } from "/app/assistant/src/contacts/contact-store.ts";
+import { getSqlite } from "/app/assistant/src/persistence/db-connection.ts";
+import { handleChannelInbound } from "/app/assistant/src/runtime/routes/inbound-message-handler.ts";
+
+type Actor = {
+  key: "A" | "B" | "C" | "D";
+  id: string;
+  name: string;
+  chat: string;
+  contactId: string;
+  channelId: string;
+  userFile: string;
+  trustClass: "guardian" | "trusted_contact";
+};
+
+const actors: Actor[] = [
+  { key:"A", id:"vlx-scope-a", name:"User A", chat:"vlx-scope-chat-a", contactId:"vlx-scope-contact-a", channelId:"vlx-scope-channel-a", userFile:"user-a.md", trustClass:"guardian" },
+  { key:"B", id:"vlx-scope-b", name:"User B", chat:"vlx-scope-chat-b", contactId:"vlx-scope-contact-b", channelId:"vlx-scope-channel-b", userFile:"user-b.md", trustClass:"trusted_contact" },
+  { key:"C", id:"vlx-scope-c", name:"User C", chat:"vlx-scope-chat-c", contactId:"vlx-scope-contact-c", channelId:"vlx-scope-channel-c", userFile:"user-c.md", trustClass:"trusted_contact" },
+  { key:"D", id:"vlx-scope-d", name:"User D", chat:"vlx-scope-chat-d", contactId:"vlx-scope-contact-d", channelId:"vlx-scope-channel-d", userFile:"user-d.md", trustClass:"trusted_contact" },
+];
+const actorMap = Object.fromEntries(actors.map(a => [a.key, a])) as Record<string, Actor>;
+const A = actorMap.A;
+
+for (const actor of actors) {
+  upsertContact({
+    id: actor.contactId,
+    displayName: actor.name,
+    userFile: actor.userFile,
+    channels: [{
+      id: actor.channelId,
+      type: "telegram",
+      address: actor.id,
+      externalChatId: actor.chat,
+      isPrimary: true,
+    }],
+  });
+}
+
+const plan = JSON.parse(readFileSync("/workspace/vlx0-multiuser-scope-plan.json","utf8"));
+const db = getSqlite();
+let counter = 0;
+
+function sleep(ms:number){ return new Promise(r=>setTimeout(r,ms)); }
+function sha(s:string){ return createHash("sha256").update(s).digest("hex"); }
+function readWs(path:string){ try{return readFileSync(join("/workspace",path),"utf8")}catch{return ""} }
+function workingWith(soul:string){ const m="## Working with [User]"; const i=soul.indexOf(m); return i<0?"":soul.slice(i+m.length).trim(); }
+
+function decode(raw:string):string {
+  const f=(v:any):string=>{
+    if(typeof v==="string") return v;
+    if(Array.isArray(v)) return v.map(f).filter(Boolean).join("");
+    if(!v || typeof v!=="object") return "";
+    if(typeof v.ref==="string"){ const n=readWs(v.ref); try{return f(JSON.parse(n))}catch{return n} }
+    if(typeof v.text==="string") return v.text;
+    if(typeof v.content==="string") return v.content;
+    if(Array.isArray(v.content)) return f(v.content);
+    return "";
+  };
+  try{return f(JSON.parse(raw))}catch{return raw}
+}
+
+function snapshot(label:string){
+  const soul=readWs("SOUL.md"), identity=readWs("IDENTITY.md");
+  const users=Object.fromEntries(actors.map(a=>[a.key,{sha256:sha(readWs("users/"+a.userFile)),content:readWs("users/"+a.userFile)}]));
+  return { label, identitySha256:sha(identity), soulSha256:sha(soul), workingWithUser:workingWith(soul), users };
+}
+
+function verdict(actor:Actor){
+  return {
+    trustClass: actor.trustClass,
+    canonicalSenderId: actor.id,
+    ...(actor.trustClass==="guardian" ? {
+      guardianExternalUserId: actor.id,
+      guardianDeliveryChatId: actor.chat,
+      guardianPrincipalId:"vlx-scope-guardian",
+      guardianDisplayName:actor.name,
+    } : {
+      guardianExternalUserId:A.id,
+      guardianDeliveryChatId:A.chat,
+      guardianPrincipalId:"vlx-scope-guardian",
+      guardianDisplayName:A.name,
+    }),
+    contactId:actor.contactId,
+    channelId:actor.channelId,
+    type:"telegram",
+    address:actor.id,
+    externalChatId:actor.chat,
+    status:"active",
+    policy:"allow",
+    memberDisplayName:actor.name,
+    interactionCount:10,
+  };
+}
+
+async function send(actor:Actor,content:string){
+  counter++;
+  const externalMessageId="vlx-scope-"+actor.key+"-"+counter;
+  const result:any=await handleChannelInbound({body:{
+    sourceChannel:"telegram",
+    interface:"telegram",
+    conversationExternalId:actor.chat,
+    externalMessageId,
+    content,
+    eventKind:"message",
+    actorDisplayName:actor.name,
+    actorExternalId:actor.id,
+    sourceMetadata:{
+      chatType:"private",
+      conversationType:"dm",
+      messageId:externalMessageId,
+      admissionPolicy:"trusted_contacts",
+      trustVerdict:verdict(actor),
+    },
+  }});
+  if(!result?.accepted || result?.denied) throw new Error("Inbound rejected for "+actor.name+": "+JSON.stringify(result));
+
+  const deadline=Date.now()+180000;
+  let eventRow:any;
+  while(Date.now()<deadline){
+    eventRow=db.query("SELECT conversation_id AS conversationId, processing_status AS status, last_processing_error AS error FROM channel_inbound_events WHERE id=?").get(result.eventId) as any;
+    if(eventRow && ["processed","failed","dead_letter"].includes(eventRow.status)) break;
+    await sleep(250);
+  }
+  if(!eventRow || eventRow.status!=="processed") throw new Error("Turn failed for "+actor.name+": "+(eventRow?.status??"missing")+" "+(eventRow?.error??""));
+
+  let rows:any[]=[];
+  const rd=Date.now()+15000;
+  while(Date.now()<rd){
+    rows=db.query("SELECT content FROM messages WHERE conversation_id=? AND role='assistant' AND finalized=1 ORDER BY created_at DESC LIMIT 3").all(eventRow.conversationId) as any[];
+    if(rows.length) break;
+    await sleep(200);
+  }
+  return {
+    actor:actor.key,
+    content,
+    response:rows.length?decode(rows[0].content).trim():"",
+    conversationId:eventRow.conversationId,
+    eventId:result.eventId,
+  };
+}
+
+const turns:any[]=[];
+const snapshots:any[]=[snapshot("initial")];
+for(const step of plan.turns){
+  const actor=actorMap[step.actor];
+  if(!actor) throw new Error("Unknown actor "+step.actor);
+  turns.push(await send(actor,step.content));
+  if(step.snapshotAfter) snapshots.push(snapshot(step.snapshotAfter));
+}
+
+mkdirSync("/workspace/data",{recursive:true});
+writeFileSync("/workspace/data/"+plan.resultFile,JSON.stringify({plan,turns,snapshots},null,2)+"\n");
+process.exit(0);
