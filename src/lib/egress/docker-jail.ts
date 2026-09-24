@@ -359,7 +359,7 @@ async function readRecordingUsage(
 const RECORDING_CA_FILENAME = "mitmproxy-ca-cert.pem";
 const ASSISTANT_CA_TARGET =
   "/usr/local/share/ca-certificates/vellum-evals-mitmproxy.crt";
-const CA_POLL_TIMEOUT_MS = 10_000;
+const CA_POLL_TIMEOUT_MS = 300_000;
 const CA_POLL_INTERVAL_MS = 100;
 
 /**
