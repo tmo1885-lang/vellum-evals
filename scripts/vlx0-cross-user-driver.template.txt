@@ -219,3 +219,4 @@ writeFileSync(
   "/workspace/data/vlx0-cross-user-result.json",
   JSON.stringify({ turns, snapshots }, null, 2) + "\n",
 );
+process.exit(0);
