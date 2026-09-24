@@ -1,5 +1,7 @@
 # VLX-0 Phase 0 Results
 
+> **Important correction:** the upstream eval adapter loaded `profile.workspaceDir` metadata but did not stage its files into the Vellum assistant. These Phase-0 runs therefore characterize **stock Vellum behavior under the VLX-0 test stimuli**, not the intended frozen VLX-0 persona. The results remain useful as a stock-Vellum comparison baseline. Valid VLX-0 runs begin after commit `0c213a19e2c9e24f2df446d24832f95e8dacac22`, which explicitly stages and verifies the frozen identity files after hatch.
+
 ## Status
 
 Phase 0 fresh-contact baseline completed on 2026-09-24.
