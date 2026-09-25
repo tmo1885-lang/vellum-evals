@@ -1,0 +1,79 @@
+import { createHash } from "node:crypto";
+import { mkdirSync, readdirSync, readFileSync, writeFileSync } from "node:fs";
+import { join, relative } from "node:path";
+import { upsertContact } from "/app/assistant/src/contacts/contact-store.ts";
+import { getSqlite, getLogsSqlite, getMemorySqlite } from "/app/assistant/src/persistence/db-connection.ts";
+import { handleChannelInbound } from "/app/assistant/src/runtime/routes/inbound-message-handler.ts";
+import { HeartbeatService } from "/app/assistant/src/heartbeat/heartbeat-service.ts";
+import { listHeartbeatRuns } from "/app/assistant/src/heartbeat/heartbeat-run-store.ts";
+
+type Actor = {
+  key:"A"|"B"|"C"; id:string; name:string; baseChat:string;
+  contactId:string; channelId:string; userFile:string;
+  trustClass:"guardian"|"trusted_contact";
+};
+const actors:Actor[]=[
+  {key:"A",id:"social-a",name:"User A",baseChat:"social-a",contactId:"social-contact-a",channelId:"social-channel-a",userFile:"user-a.md",trustClass:"guardian"},
+  {key:"B",id:"social-b",name:"User B",baseChat:"social-b",contactId:"social-contact-b",channelId:"social-channel-b",userFile:"user-b.md",trustClass:"trusted_contact"},
+  {key:"C",id:"social-c",name:"User C",baseChat:"social-c",contactId:"social-contact-c",channelId:"social-channel-c",userFile:"user-c.md",trustClass:"trusted_contact"},
+];
+const actorMap=Object.fromEntries(actors.map(a=>[a.key,a])) as Record<string,Actor>;
+const A=actorMap.A;
+for(const actor of actors){
+  upsertContact({id:actor.contactId,displayName:actor.name,userFile:actor.userFile,channels:[{id:actor.channelId,type:"telegram",address:actor.id,externalChatId:actor.baseChat,isPrimary:true}]});
+}
+const plan=JSON.parse(readFileSync("/workspace/vlx0-social-autonomy-plan.json","utf8"));
+const db=getSqlite(); let counter=0;
+function sleep(ms:number){return new Promise(r=>setTimeout(r,ms));}
+function sha(s:string){return createHash("sha256").update(s).digest("hex");}
+function readWs(p:string){try{return readFileSync(join("/workspace",p),"utf8")}catch{return ""}}
+function decode(raw:string):string{const f=(v:any):string=>{if(typeof v==="string")return v;if(Array.isArray(v))return v.map(f).filter(Boolean).join("");if(!v||typeof v!=="object")return "";if(typeof v.ref==="string"){const n=readWs(v.ref);try{return f(JSON.parse(n))}catch{return n}}if(typeof v.text==="string")return v.text;if(typeof v.content==="string")return v.content;if(Array.isArray(v.content))return f(v.content);return ""};try{return f(JSON.parse(raw))}catch{return raw}}
+function memoryFiles(){const root="/workspace/memory";const out:any[]=[];function walk(dir:string){let es:any[]=[];try{es=readdirSync(dir,{withFileTypes:true}) as any[]}catch{return}for(const e of es){const p=join(dir,e.name);if(e.isDirectory())walk(p);else if(e.isFile()&&e.name.endsWith(".md")){let s="";try{s=readFileSync(p,"utf8")}catch{}out.push({path:relative("/workspace",p),sha256:sha(s),content:s});}}}walk(root);return out.sort((a,b)=>a.path.localeCompare(b.path));}
+function snapshot(label:string){const soul=readWs("SOUL.md"),identity=readWs("IDENTITY.md");const users=Object.fromEntries(actors.map(a=>[a.key,{sha256:sha(readWs("users/"+a.userFile)),content:readWs("users/"+a.userFile)}]));return{label,identitySha256:sha(identity),soulSha256:sha(soul),identityText:identity,soulText:soul,now:readWs("NOW.md"),users,memoryFiles:memoryFiles()};}
+function recallLogs(cid:string){const m=getMemorySqlite();if(!m)return[];try{return m.query("SELECT id,message_id AS messageId,enabled,degraded,semantic_hits AS semanticHits,merged_count AS mergedCount,selected_count AS selectedCount,injected_tokens AS injectedTokens,injected_text AS injectedText,reason,query_context AS queryContext,created_at AS createdAt FROM memory_recall_logs WHERE conversation_id=? ORDER BY created_at ASC").all(cid) as any[]}catch{return[]}}
+function requestLogs(cid:string){const l=getLogsSqlite();if(!l)return[];try{return l.query("SELECT id,message_id AS messageId,request_payload AS requestPayload,response_payload AS responsePayload,created_at AS createdAt,call_site AS callSite FROM llm_request_logs WHERE conversation_id=? ORDER BY created_at ASC").all(cid) as any[]}catch{return[]}}
+function conversationRows(cid:string|null){if(!cid)return[];try{return db.query("SELECT id,role,content,created_at AS createdAt FROM messages WHERE conversation_id=? ORDER BY created_at ASC").all(cid) as any[]}catch{return[]}}
+function verdict(actor:Actor,chat:string){return{trustClass:actor.trustClass,canonicalSenderId:actor.id,...(actor.trustClass==="guardian"?{guardianExternalUserId:actor.id,guardianDeliveryChatId:chat,guardianPrincipalId:"social-guardian",guardianDisplayName:actor.name}:{guardianExternalUserId:A.id,guardianDeliveryChatId:A.baseChat,guardianPrincipalId:"social-guardian",guardianDisplayName:A.name}),contactId:actor.contactId,channelId:actor.channelId,type:"telegram",address:actor.id,externalChatId:chat,status:"active",policy:"allow",memberDisplayName:actor.name,interactionCount:30};}
+async function send(actor:Actor,chatSuffix:string,content:string){
+  counter++;const chat=actor.baseChat+"-"+chatSuffix;const externalMessageId="social-"+actor.key+"-"+counter;const before=Date.now();
+  const result:any=await handleChannelInbound({body:{sourceChannel:"telegram",interface:"telegram",conversationExternalId:chat,externalMessageId,content,eventKind:"message",actorDisplayName:actor.name,actorExternalId:actor.id,sourceMetadata:{chatType:"private",conversationType:"dm",messageId:externalMessageId,admissionPolicy:"trusted_contacts",trustVerdict:verdict(actor,chat)}}});
+  if(!result?.accepted||result?.denied)throw new Error("rejected "+actor.key+" "+JSON.stringify(result));
+  const deadline=Date.now()+240000;let er:any;
+  while(Date.now()<deadline){er=db.query("SELECT conversation_id AS conversationId,processing_status AS status,last_processing_error AS error FROM channel_inbound_events WHERE id=?").get(result.eventId) as any;if(er&&["processed","failed","dead_letter"].includes(er.status))break;await sleep(250)}
+  if(!er||er.status!=="processed")throw new Error("turn failed "+actor.key+" "+(er?.status??"missing")+" "+(er?.error??""));
+  let rows:any[]=[];const rd=Date.now()+15000;
+  while(Date.now()<rd){rows=db.query("SELECT content,created_at AS createdAt FROM messages WHERE conversation_id=? AND role='assistant' AND finalized=1 AND created_at>=? ORDER BY created_at ASC").all(er.conversationId,before) as any[];if(rows.length)break;await sleep(200)}
+  return{actor:actor.key,chatSuffix,content,response:rows.map(r=>decode(r.content).trim()).filter(Boolean).join("\n"),conversationId:er.conversationId,eventId:result.eventId,requestLogs:requestLogs(er.conversationId),recallLogs:recallLogs(er.conversationId),conversationRows:conversationRows(er.conversationId)};
+}
+const heartbeat=new HeartbeatService();
+async function runHeartbeat(label:string){
+  const priorIds=new Set(listHeartbeatRuns(30).map(r=>r.id));
+  const didRun=await heartbeat.runOnce({force:true});
+  await sleep(750);
+  const runs=listHeartbeatRuns(30);
+  const run=runs.find(r=>!priorIds.has(r.id))??runs[0]??null;
+  const cid=run?.conversationId??null;
+  return{label,didRun,run,conversationRows:conversationRows(cid),requestLogs:cid?requestLogs(cid):[],recallLogs:cid?recallLogs(cid):[]};
+}
+
+const turns:any[]=[];const snapshots:any[]=[snapshot("initial")];const heartbeats:any[]=[];
+try{
+  for(const step of plan.turns){
+    const actor=actorMap[step.actor];if(!actor)throw new Error("unknown actor "+step.actor);
+    const r=await send(actor,step.chat,step.content);
+    turns.push({phase:step.phase,...r});
+    if(step.snapshotAfter)snapshots.push(snapshot(step.snapshotAfter));
+  }
+  heartbeats.push(await runHeartbeat("social-heartbeat"));
+  snapshots.push(snapshot("final"));
+  await heartbeat.stop();
+  mkdirSync("/workspace/data",{recursive:true});
+  writeFileSync("/workspace/data/vlx0-social-autonomy-result.json",JSON.stringify({turns,heartbeats,snapshots},null,2)+"\n");
+  process.exit(0);
+}catch(err){
+  try{await heartbeat.stop();}catch{}
+  snapshots.push(snapshot("error"));
+  mkdirSync("/workspace/data",{recursive:true});
+  writeFileSync("/workspace/data/vlx0-social-autonomy-error.json",JSON.stringify({error:err instanceof Error?err.message:String(err),turns,heartbeats,snapshots},null,2)+"\n");
+  process.exit(2);
+}

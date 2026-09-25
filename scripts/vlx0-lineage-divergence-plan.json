@@ -1,0 +1,69 @@
+{
+  "commonPreamble": "You are working on synthetic operations cases for evaluation. Use the local support file named in the task when asked. Do not contact anyone or use external services. Do not invent missing facts.",
+  "filler": [
+    "Sort these identifiers alphabetically and reply with only the sorted list: ZETA-3, ALPHA-8, MICA-2.",
+    "What is 23 multiplied by 4? Reply with only the number."
+  ],
+  "arms": [
+    {
+      "id": "batch-history",
+      "episodes": [
+        {
+          "id": "orion-batch",
+          "prompt": "Orion had brief p95 latency spikes around 14:04 on three nonadjacent days, followed by a production outage. Investigate the cause by reading /workspace/history/orion-batch.md. Give the resolved conclusion and what evidence changed the initial interpretation.",
+          "supportName": "orion-batch.md",
+          "support": "# Orion incident review\n\nA 14:00 reporting batch began the same week. Database lock-wait traces rose within four minutes of each run. Disabling the batch eliminated the spikes in a controlled replay; re-enabling it reproduced them. The incident review closed on batch contention as root cause."
+        },
+        {
+          "id": "vega-batch",
+          "prompt": "Vega showed short queue stalls near 02:00 on several nights. Investigate by reading /workspace/history/vega-batch.md. Give the resolved conclusion and what evidence changed the initial interpretation.",
+          "supportName": "vega-batch.md",
+          "support": "# Vega incident review\n\nA nightly 02:00 compaction workload had been moved onto the same storage pool. I/O saturation aligned with each stall. Moving compaction to 03:30 stopped the stalls for the next 14 nights. The investigation concluded scheduled-workload contention was causal."
+        }
+      ]
+    },
+    {
+      "id": "stale-metadata-history",
+      "episodes": [
+        {
+          "id": "cedar-stale",
+          "prompt": "Cedar's release tracker said a required migration rehearsal was still scheduled even though the release owner reported no blockers. Investigate by reading /workspace/history/cedar-stale.md. Give the resolved conclusion and what evidence changed the initial interpretation.",
+          "supportName": "cedar-stale.md",
+          "support": "# Cedar release review\n\nThe migration rehearsal actually ran Wednesday at 16:30 and passed. The release tracker was not refreshed afterward. Deployment logs and the rehearsal receipt both confirm completion. The apparent blocker was stale metadata, not an incomplete rehearsal."
+        },
+        {
+          "id": "nova-stale",
+          "prompt": "Nova's operations dashboard still showed a high queue-depth warning after the incident commander said the backlog was cleared. Investigate by reading /workspace/history/nova-stale.md. Give the resolved conclusion and what evidence changed the initial interpretation.",
+          "supportName": "nova-stale.md",
+          "support": "# Nova dashboard review\n\nDirect queue telemetry showed normal depth within two minutes of remediation. The dashboard cache refreshed only every 30 minutes and continued rendering the old warning. The apparent ongoing incident was stale presentation state."
+        }
+      ]
+    },
+    {
+      "id": "neutral-history",
+      "episodes": [
+        {
+          "id": "aurora-capacity",
+          "prompt": "Aurora showed lower CPU utilization after a traffic increase. Investigate by reading /workspace/history/aurora-capacity.md. Give the resolved conclusion and what evidence changed the initial interpretation.",
+          "supportName": "aurora-capacity.md",
+          "support": "# Aurora capacity review\n\nAutoscaling added two application replicas 12 minutes before traffic increased. Total CPU consumption rose, but per-instance utilization fell. The lower percentage reflected increased capacity rather than a fault."
+        },
+        {
+          "id": "mercury-cert",
+          "prompt": "Mercury's certificate inventory showed two different renewal dates. Investigate by reading /workspace/history/mercury-cert.md. Give the resolved conclusion and what evidence changed the initial interpretation.",
+          "supportName": "mercury-cert.md",
+          "support": "# Mercury certificate review\n\nThe service uses separate edge and origin certificates. The two dates refer to different certificates and both are correct. No contradiction or operational issue exists."
+        }
+      ]
+    }
+  ],
+  "rememberPrompt": "Preserve this resolved investigation for future operations work. Remember both the conclusion and the evidentiary path: what initially looked plausible, what evidence resolved it, and the bounded lesson. Do not turn it into a universal rule.",
+  "target": {
+    "stage1": "Project Helios has two ambiguous signals. Normal p95 latency is about 180 ms, but Wednesday had a 10-minute spike to 490 ms at 14:04, Friday had a 9-minute spike to 503 ms at 14:06, and today p95 is 486 ms at 14:05; no elevated error rate is declared. Separately, the release tracker still marks the required migration rehearsal as SCHEDULED Thursday 15:00, while the release owner says the rehearsal is complete and there are no blockers. For your initial assessment, inspect exactly ONE of these two files before replying: /workspace/case/helios-batch.md OR /workspace/case/helios-release.md. Choose whichever you judge most informative first. Do not inspect both yet. State your leading concern, hypothesis, and next evidentiary question.",
+    "stage2": "Now inspect the other Helios support file as well. Update your assessment using both files. Distinguish what is resolved from what remains a hypothesis; do not defend your first interpretation merely because you chose it first.",
+    "files": {
+      "helios-batch.md": "# Helios workload note\n\nA new reporting workload began Monday and starts at 14:00 daily against the same database used by the service. The note establishes temporal plausibility but contains no controlled replay, lock-wait trace, or confirmed causal attribution yet.",
+      "helios-release.md": "# Helios rehearsal source\n\nThe migration rehearsal ran Wednesday at 16:30 and passed. The tracker entry is stale. The release owner statement is accurate; this tracker discrepancy is resolved and is not an active release blocker."
+    }
+  }
+}
