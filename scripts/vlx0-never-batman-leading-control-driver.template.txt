@@ -1,0 +1,15 @@
+import { readFileSync, writeFileSync, mkdirSync } from "node:fs";
+import { upsertContact } from "/app/assistant/src/contacts/contact-store.ts";
+import { getSqlite, getLogsSqlite, getMemorySqlite } from "/app/assistant/src/persistence/db-connection.ts";
+import { handleChannelInbound } from "/app/assistant/src/runtime/routes/inbound-message-handler.ts";
+const plan=JSON.parse(readFileSync("/workspace/vlx0-never-batman-leading-control-plan.json","utf8")) as any;
+const db=getSqlite();let counter=0;
+const A={id:"never-batman-user",name:"User A",contactId:"never-batman-contact",channelId:"never-batman-channel",userFile:"user-a.md"};
+upsertContact({id:A.contactId,displayName:A.name,userFile:A.userFile,channels:[{id:A.channelId,type:"telegram",address:A.id,externalChatId:"never-batman-root",isPrimary:true}]});
+function sleep(ms:number){return new Promise(r=>setTimeout(r,ms));}
+function decode(raw:string):string{try{const v=JSON.parse(raw);const f=(x:any):string=>typeof x==="string"?x:Array.isArray(x)?x.map(f).join(""):x&&typeof x==="object"?(typeof x.text==="string"?x.text:typeof x.content==="string"?x.content:Array.isArray(x.content)?f(x.content):""):"";return f(v)}catch{return raw}}
+function verdict(chat:string){return{trustClass:"guardian",canonicalSenderId:A.id,guardianExternalUserId:A.id,guardianDeliveryChatId:chat,guardianPrincipalId:"never-batman-principal",guardianDisplayName:A.name,contactId:A.contactId,channelId:A.channelId,type:"telegram",address:A.id,externalChatId:chat,status:"active",policy:"allow",memberDisplayName:A.name,interactionCount:1};}
+async function send(chat:string,content:string){counter++;const ext="never-batman-"+counter;const before=Date.now();const result:any=await handleChannelInbound({body:{sourceChannel:"telegram",interface:"telegram",conversationExternalId:chat,externalMessageId:ext,content,eventKind:"message",actorDisplayName:A.name,actorExternalId:A.id,sourceMetadata:{chatType:"private",conversationType:"dm",messageId:ext,admissionPolicy:"trusted_contacts",trustVerdict:verdict(chat)}}});if(!result?.accepted||result?.denied)throw new Error("rejected");const deadline=Date.now()+180000;let er:any;while(Date.now()<deadline){er=db.query("SELECT conversation_id AS conversationId,processing_status AS status,last_processing_error AS error FROM channel_inbound_events WHERE id=?").get(result.eventId) as any;if(er&&["processed","failed","dead_letter"].includes(er.status))break;await sleep(250)}if(!er||er.status!=="processed")throw new Error("failed "+(er?.error??""));const rows:any[]=db.query("SELECT content FROM messages WHERE conversation_id=? AND role='assistant' AND finalized=1 AND created_at>=? ORDER BY created_at ASC").all(er.conversationId,before) as any[];return{response:rows.map(r=>decode(r.content)).filter(Boolean).join("\n"),conversationId:er.conversationId};}
+const out:any[]=[];
+for(let i=1;i<=plan.runs;i++){const r=await send("never-batman-fresh-"+i,plan.probe);out.push({run:i,...r});}
+mkdirSync("/workspace/data",{recursive:true});writeFileSync("/workspace/data/vlx0-never-batman-leading-control-result.json",JSON.stringify(out,null,2)+"\n");process.exit(0);
