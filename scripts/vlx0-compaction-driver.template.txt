@@ -6,7 +6,7 @@ import { getSqlite } from "/app/assistant/src/persistence/db-connection.ts";
 import { handleChannelInbound } from "/app/assistant/src/runtime/routes/inbound-message-handler.ts";
 
 type Turn = { content: string; probe?: string };
-type Plan = { coreTurns: Turn[]; fillerTurns: Turn[]; preProbes: Turn[]; postProbes: Turn[]; controlMarker: string; compactCommand: string; compactRetryFiller: Turn[] };
+type Plan = { coreTurns: Turn[]; fillerTurns: Turn[]; preProbes: Turn[]; postProbes: Turn[]; controlMarker: string; compactCommand: string; compactRetryFiller: Turn[]; maxCompactRetries: number };
 const plan = JSON.parse(readFileSync("/workspace/vlx0-compaction-plan.json","utf8")) as Plan;
 const config = JSON.parse(readFileSync("/workspace/vlx0-compaction-config.json","utf8")) as { arm: "compact"|"control" };
 const db=getSqlite(); let counter=0;
@@ -34,7 +34,7 @@ try{
  if(config.arm==="compact"){
    intervention=await runA({content:plan.compactCommand,probe:"compact-command"},"intervention");
    let cs=convState(aConversation); let retry=0;
-   while((!cs?.compactedAt || !cs?.compactedCount || !cs?.contextSummary) && retry<plan.compactRetryFiller.length){await runA(plan.compactRetryFiller[retry],"compact-retry-filler");retry++;intervention=await runA({content:plan.compactCommand,probe:"compact-command-retry-"+retry},"intervention");cs=convState(aConversation);}
+   while((!cs?.compactedAt || !cs?.compactedCount || !cs?.contextSummary) && retry<Math.min(plan.maxCompactRetries,plan.compactRetryFiller.length)){await runA(plan.compactRetryFiller[retry],"compact-retry-filler");retry++;intervention=await runA({content:plan.compactCommand,probe:"compact-command-retry-"+retry},"intervention");cs=convState(aConversation);}
  } else { intervention=await runA({content:plan.controlMarker,probe:"control-marker"},"intervention"); }
  const postIntervention=snapshot("post-intervention",aConversation);
  for(const t of plan.postProbes) await runA(t,"post-probe");
