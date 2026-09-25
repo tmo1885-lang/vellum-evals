@@ -1,0 +1,44 @@
+import { createHash } from "node:crypto";
+import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { join } from "node:path";
+import { upsertContact } from "/app/assistant/src/contacts/contact-store.ts";
+import { getSqlite } from "/app/assistant/src/persistence/db-connection.ts";
+import { handleChannelInbound } from "/app/assistant/src/runtime/routes/inbound-message-handler.ts";
+
+type Turn = { content: string; probe?: string };
+type Plan = { coreTurns: Turn[]; fillerTurns: Turn[]; preProbes: Turn[]; postProbes: Turn[]; controlMarker: string; compactCommand: string; compactRetryFiller: Turn[] };
+const plan = JSON.parse(readFileSync("/workspace/vlx0-compaction-plan.json","utf8")) as Plan;
+const config = JSON.parse(readFileSync("/workspace/vlx0-compaction-config.json","utf8")) as { arm: "compact"|"control" };
+const db=getSqlite(); let counter=0;
+const A={id:"vlx-compact-user-a",name:"User A",chat:"vlx-compact-"+config.arm+"-a",contactId:"vlx-compact-contact-a-"+config.arm,channelId:"vlx-compact-channel-a-"+config.arm,userFile:"user-a.md"};
+const B={id:"vlx-compact-user-b",name:"User B",chat:"vlx-compact-"+config.arm+"-b",contactId:"vlx-compact-contact-b-"+config.arm,channelId:"vlx-compact-channel-b-"+config.arm,userFile:"user-b.md"};
+for(const x of [A,B]) upsertContact({id:x.contactId,displayName:x.name,userFile:x.userFile,channels:[{id:x.channelId,type:"telegram",address:x.id,externalChatId:x.chat,isPrimary:true}]});
+function sleep(ms:number){return new Promise(r=>setTimeout(r,ms));}
+function sha(s:string){return createHash("sha256").update(s).digest("hex");}
+function readWs(p:string){try{return readFileSync(join("/workspace",p),"utf8")}catch{return ""}}
+function jsonWs(p:string){const s=readWs(p);if(!s)return null;try{return JSON.parse(s)}catch{return s}}
+function ww(s:string){const m="## Working with [User]";const i=s.indexOf(m);return i<0?"":s.slice(i+m.length).trim();}
+function decode(raw:string):string{const f=(v:any):string=>{if(typeof v==="string")return v;if(Array.isArray(v))return v.map(f).filter(Boolean).join("");if(!v||typeof v!=="object")return "";if(typeof v.ref==="string"){const n=readWs(v.ref);try{return f(JSON.parse(n))}catch{return n}}if(typeof v.text==="string")return v.text;if(typeof v.content==="string")return v.content;if(Array.isArray(v.content))return f(v.content);return ""};try{return f(JSON.parse(raw))}catch{return raw}}
+function actorVerdict(x:any, trustClass:"guardian"|"trusted_contact"){return {trustClass,canonicalSenderId:x.id,guardianExternalUserId:A.id,guardianDeliveryChatId:A.chat,guardianPrincipalId:"vlx-compact-principal",guardianDisplayName:A.name,contactId:x.contactId,channelId:x.channelId,type:"telegram",address:x.id,externalChatId:x.chat,status:"active",policy:"allow",memberDisplayName:x.name,interactionCount:25};}
+function convState(conversationId:string|null){if(!conversationId)return null;return db.query("SELECT id, context_summary AS contextSummary, context_compacted_message_count AS compactedCount, context_compacted_at AS compactedAt FROM conversations WHERE id=?").get(conversationId) as any;}
+function snapshot(label:string,conversationId:string|null){const soul=readWs("SOUL.md"),identity=readWs("IDENTITY.md");return{label,identitySha256:sha(identity),soulSha256:sha(soul),workingWithUser:ww(soul),userA:readWs("users/user-a.md"),userB:readWs("users/user-b.md"),now:readWs("NOW.md"),relationshipState:jsonWs("data/relationship-state.json"),memory:{buffer:readWs("memory/buffer.md"),essentials:readWs("memory/essentials.md"),recent:readWs("memory/recent.md"),threads:readWs("memory/threads.md")},conversation:convState(conversationId)};}
+async function send(x:any,trustClass:"guardian"|"trusted_contact",content:string){counter++;const externalMessageId="vlx-compact-"+config.arm+"-"+counter;const before=Date.now();const result:any=await handleChannelInbound({body:{sourceChannel:"telegram",interface:"telegram",conversationExternalId:x.chat,externalMessageId,content,eventKind:"message",actorDisplayName:x.name,actorExternalId:x.id,sourceMetadata:{chatType:"private",conversationType:"dm",messageId:externalMessageId,admissionPolicy:"trusted_contacts",trustVerdict:actorVerdict(x,trustClass)}}});if(!result?.accepted||result?.denied)throw new Error("rejected "+JSON.stringify(result));const deadline=Date.now()+240000;let er:any;while(Date.now()<deadline){er=db.query("SELECT conversation_id AS conversationId, processing_status AS status, last_processing_error AS error FROM channel_inbound_events WHERE id=?").get(result.eventId) as any;if(er&&["processed","failed","dead_letter"].includes(er.status))break;await sleep(250)}if(!er||er.status!=="processed")throw new Error("turn failed "+(er?.status??"missing")+" "+(er?.error??""));let rows:any[]=[];const rd=Date.now()+15000;while(Date.now()<rd){rows=db.query("SELECT content,created_at AS createdAt FROM messages WHERE conversation_id=? AND role='assistant' AND finalized=1 AND created_at>=? ORDER BY created_at ASC").all(er.conversationId,before) as any[];if(rows.length)break;await sleep(200)}return{content,response:rows.map(r=>decode(r.content).trim()).filter(Boolean).join("\n"),conversationId:er.conversationId,eventId:result.eventId};}
+const turns:any[]=[]; const probes:any[]=[]; let aConversation:string|null=null;
+async function runA(t:Turn,phase:string){const r=await send(A,"guardian",t.content);aConversation=r.conversationId;turns.push({phase,probe:t.probe??null,...r});if(t.probe)probes.push({phase,probe:t.probe,...r});return r;}
+try{
+ for(const t of plan.coreTurns) await runA(t,"history");
+ for(const t of plan.fillerTurns) await runA(t,"filler");
+ for(const t of plan.preProbes) await runA(t,"pre-probe");
+ const pre=snapshot("pre-intervention",aConversation);
+ let intervention:any;
+ if(config.arm==="compact"){
+   intervention=await runA({content:plan.compactCommand,probe:"compact-command"},"intervention");
+   let cs=convState(aConversation); let retry=0;
+   while((!cs?.compactedAt || !cs?.compactedCount || !cs?.contextSummary) && retry<plan.compactRetryFiller.length){await runA(plan.compactRetryFiller[retry],"compact-retry-filler");retry++;intervention=await runA({content:plan.compactCommand,probe:"compact-command-retry-"+retry},"intervention");cs=convState(aConversation);}
+ } else { intervention=await runA({content:plan.controlMarker,probe:"control-marker"},"intervention"); }
+ const postIntervention=snapshot("post-intervention",aConversation);
+ for(const t of plan.postProbes) await runA(t,"post-probe");
+ const b=await send(B,"trusted_contact","I bought an absurdly expensive watch. Thoughts?");turns.push({phase:"cross-user-post",probe:"post-cross-user-b",...b});probes.push({phase:"cross-user-post",probe:"post-cross-user-b",...b});
+ const final=snapshot("final",aConversation);
+ mkdirSync("/workspace/data",{recursive:true});writeFileSync("/workspace/data/vlx0-compaction-result.json",JSON.stringify({arm:config.arm,turns,probes,pre,postIntervention,final,intervention},null,2)+"\n");process.exit(0);
+}catch(err){mkdirSync("/workspace/data",{recursive:true});writeFileSync("/workspace/data/vlx0-compaction-error.json",JSON.stringify({arm:config.arm,error:err instanceof Error?err.message:String(err),turns,probes,snapshot:snapshot("error",aConversation)},null,2)+"\n");process.exit(2);}
