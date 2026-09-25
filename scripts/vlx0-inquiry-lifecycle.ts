@@ -24,6 +24,11 @@ for(const arm of plan.arms){
   );
   try{
     await agent.hatch();
+    const heartbeatProfile=await execVellum([
+      "exec",agent.id,"--","assistant","config","set",
+      "llm.callSites.heartbeatAgent.profile","vlx-neutral-openai",
+    ]);
+    if(heartbeatProfile.code!==0)throw new Error("could not pin heartbeatAgent profile: "+heartbeatProfile.stderr);
     await agent.writeWorkspaceFile!({path:"users/user-a.md",content:"# User Profile\n\n- Preferred name/reference: User A\n- Relationship: guardian / primary user\n"});
     await agent.writeWorkspaceFile!({path:"case/vendor-profile.md",content:plan.support});
     await agent.writeWorkspaceFile!({path:"vlx0-inquiry-lifecycle-plan.json",content:planText});
