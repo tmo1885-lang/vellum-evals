@@ -1,0 +1,53 @@
+import { createHash } from "node:crypto";
+import { mkdirSync, readdirSync, readFileSync, writeFileSync } from "node:fs";
+import { join, relative } from "node:path";
+import { upsertContact } from "/app/assistant/src/contacts/contact-store.ts";
+import { getSqlite, getMemorySqlite } from "/app/assistant/src/persistence/db-connection.ts";
+import { enqueueMemoryJob } from "/app/assistant/src/persistence/jobs-store.ts";
+import { handleChannelInbound } from "/app/assistant/src/runtime/routes/inbound-message-handler.ts";
+
+const plan = JSON.parse(readFileSync("/workspace/vlx0-batman-memory-durability-plan.json","utf8")) as any;
+const config = JSON.parse(readFileSync("/workspace/vlx0-batman-memory-durability-config.json","utf8")) as { arm:string };
+const armSpec = plan.arms.find((x:any)=>x.id===config.arm);
+if(!armSpec) throw new Error("unknown arm "+config.arm);
+const db=getSqlite(); let counter=0;
+const A={id:"memory-durability-user-"+config.arm,name:"User A",contactId:"memory-durability-contact-"+config.arm,channelId:"memory-durability-channel-"+config.arm,userFile:"user-a.md"};
+upsertContact({id:A.contactId,displayName:A.name,userFile:A.userFile,channels:[{id:A.channelId,type:"telegram",address:A.id,externalChatId:"memory-durability-"+config.arm+"-main",isPrimary:true}]});
+function sleep(ms:number){return new Promise(r=>setTimeout(r,ms));}
+function sha(s:string){return createHash("sha256").update(s).digest("hex");}
+function readWs(p:string){try{return readFileSync(join("/workspace",p),"utf8")}catch{return ""}}
+function ww(s:string){const m="## Working with [User]";const i=s.indexOf(m);return i<0?"":s.slice(i+m.length).trim();}
+function decode(raw:string):string{const f=(v:any):string=>{if(typeof v==="string")return v;if(Array.isArray(v))return v.map(f).filter(Boolean).join("");if(!v||typeof v!=="object")return "";if(typeof v.ref==="string"){const n=readWs(v.ref);try{return f(JSON.parse(n))}catch{return n}}if(typeof v.text==="string")return v.text;if(typeof v.content==="string")return v.content;if(Array.isArray(v.content))return f(v.content);return ""};try{return f(JSON.parse(raw))}catch{return raw}}
+function memoryFiles(){const root="/workspace/memory";const out:any[]=[];function walk(d:string){let es:any[]=[];try{es=readdirSync(d,{withFileTypes:true}) as any[]}catch{return}for(const e of es){const p=join(d,e.name);if(e.isDirectory())walk(p);else if(e.isFile()&&e.name.endsWith(".md")){let s="";try{s=readFileSync(p,"utf8")}catch{}out.push({path:relative("/workspace",p),content:s,sha256:sha(s)});}}walk(root);return out.sort((a,b)=>a.path.localeCompare(b.path));}
+function convState(id:string|null){if(!id)return null;return db.query("SELECT id,context_summary AS contextSummary,context_compacted_message_count AS compactedCount,context_compacted_at AS compactedAt FROM conversations WHERE id=?").get(id) as any;}
+function recentConsolidationJobs(){const m=getMemorySqlite();if(!m)return[];try{return m.query("SELECT id,type,status,attempts,last_error AS lastError,created_at AS createdAt,updated_at AS updatedAt FROM memory_jobs WHERE type='memory_v2_consolidate' ORDER BY created_at DESC LIMIT 12").all() as any[]}catch{return[]}}
+function snapshot(label:string,cid:string|null){const identity=readWs("IDENTITY.md"),soul=readWs("SOUL.md");return{label,identitySha256:sha(identity),soulSha256:sha(soul),identityText:identity,workingWithUser:ww(soul),userFile:readWs("users/user-a.md"),now:readWs("NOW.md"),memoryFiles:memoryFiles(),consolidationJobs:recentConsolidationJobs(),conversation:convState(cid)};}
+function verdict(chat:string){return{trustClass:"guardian",canonicalSenderId:A.id,guardianExternalUserId:A.id,guardianDeliveryChatId:chat,guardianPrincipalId:"memory-durability-principal-"+config.arm,guardianDisplayName:A.name,contactId:A.contactId,channelId:A.channelId,type:"telegram",address:A.id,externalChatId:chat,status:"active",policy:"allow",memberDisplayName:A.name,interactionCount:30};}
+async function send(chat:string,content:string){counter++;const externalMessageId="memory-durability-"+config.arm+"-"+counter;const before=Date.now();const result:any=await handleChannelInbound({body:{sourceChannel:"telegram",interface:"telegram",conversationExternalId:chat,externalMessageId,content,eventKind:"message",actorDisplayName:A.name,actorExternalId:A.id,sourceMetadata:{chatType:"private",conversationType:"dm",messageId:externalMessageId,admissionPolicy:"trusted_contacts",trustVerdict:verdict(chat)}}});if(!result?.accepted||result?.denied)throw new Error("rejected "+JSON.stringify(result));const deadline=Date.now()+240000;let er:any;while(Date.now()<deadline){er=db.query("SELECT conversation_id AS conversationId,processing_status AS status,last_processing_error AS error FROM channel_inbound_events WHERE id=?").get(result.eventId) as any;if(er&&["processed","failed","dead_letter"].includes(er.status))break;await sleep(250)}if(!er||er.status!=="processed")throw new Error("turn failed "+(er?.status??"missing")+" "+(er?.error??""));let rows:any[]=[];const rd=Date.now()+15000;while(Date.now()<rd){rows=db.query("SELECT content,created_at AS createdAt FROM messages WHERE conversation_id=? AND role='assistant' AND finalized=1 AND created_at>=? ORDER BY created_at ASC").all(er.conversationId,before) as any[];if(rows.length)break;await sleep(200)}return{content,response:rows.map(r=>decode(r.content).trim()).filter(Boolean).join("\n"),conversationId:er.conversationId,eventId:result.eventId,startedAt:before};}
+function recallLogsSince(cid:string,since:number){const m=getMemorySqlite();if(!m)return[];try{return m.query("SELECT id,message_id AS messageId,semantic_hits AS semanticHits,merged_count AS mergedCount,selected_count AS selectedCount,injected_tokens AS injectedTokens,top_candidates_json AS topCandidatesJson,injected_text AS injectedText,reason,query_context AS queryContext,created_at AS createdAt FROM memory_recall_logs WHERE conversation_id=? AND created_at>=? ORDER BY created_at ASC").all(cid,since) as any[]}catch{return[]}}
+async function waitPastMinuteBoundary(){const ms=61000-(Date.now()%60000);await sleep(ms);}
+async function forceConsolidation(label:string){await waitPastMinuteBoundary();const id=enqueueMemoryJob("memory_v2_consolidate",{trigger:"manual",label});const m=getMemorySqlite();if(!m)throw new Error("memory DB unavailable");const deadline=Date.now()+300000;let row:any=null;while(Date.now()<deadline){row=m.query("SELECT id,type,status,attempts,last_error AS lastError,created_at AS createdAt,updated_at AS updatedAt FROM memory_jobs WHERE id=?").get(id) as any;if(row&&["completed","failed"].includes(row.status))return row;await sleep(500);}throw new Error("consolidation timed out: "+id);}
+
+const turns:any[]=[];const snapshots:any[]=[snapshot("initial",null)];const probeSets:any[]=[];const consolidations:any[]=[];let mainCid:string|null=null;
+async function run(chat:string,phase:string,text:string){const r=await send(chat,text);turns.push({phase,...r});return r;}
+async function probeSet(label:string,chat:string){const rows:any[]=[];for(const p of plan.activeProbes){const r=await send(chat,p.text);rows.push({id:p.id,...r,recallLogs:recallLogsSince(r.conversationId,r.startedAt)});turns.push({phase:label,probe:p.id,...r});}probeSets.push({label,rows});}
+try{
+ let r=await run("memory-durability-"+config.arm+"-main","setup",armSpec.setup);mainCid=r.conversationId;snapshots.push(snapshot("after-setup",mainCid));
+ for(let i=0;i<plan.episodes.length;i++){r=await run("memory-durability-"+config.arm+"-main","episode-"+(i+1),plan.episodes[i]);mainCid=r.conversationId;snapshots.push(snapshot("after-episode-"+(i+1),mainCid));}
+ r=await run("memory-durability-"+config.arm+"-main","interpretation",plan.interpretationPrompt);snapshots.push(snapshot("after-interpretation",mainCid));
+ r=await run("memory-durability-"+config.arm+"-main","remember-lessons",plan.rememberInterpretationPrompt);snapshots.push(snapshot("after-remember-lessons",mainCid));
+ const c1=await forceConsolidation("initial-"+config.arm);consolidations.push({label:"initial",...c1});snapshots.push(snapshot("after-initial-consolidation",mainCid));
+ for(const t of plan.fillerTurns){r=await run("memory-durability-"+config.arm+"-main","filler",t);mainCid=r.conversationId;}
+ let compactOK=false;for(let attempt=1;attempt<=2;attempt++){r=await run("memory-durability-"+config.arm+"-main","compact-"+attempt,plan.compactCommand);const st=convState(mainCid);snapshots.push(snapshot("after-compact-"+attempt,mainCid));if(st?.compactedAt&&st?.compactedCount>0&&st?.contextSummary){compactOK=true;break;}if(attempt<2)await run("memory-durability-"+config.arm+"-main","compact-filler","Neutral compaction retry filler. No new memory or persona rule. Reply only: noted.");}
+ if(!compactOK)throw new Error("valid compaction did not occur");
+ await probeSet("active-persona-probes","memory-durability-"+config.arm+"-active-probes");snapshots.push(snapshot("after-active-probes",mainCid));
+ if(config.arm==="batman"){
+   r=await run("memory-durability-batman-revoke","revoke",plan.revokeBatman);snapshots.push(snapshot("after-revoke",r.conversationId));
+   await probeSet("post-revoke-probes","memory-durability-batman-post-revoke");snapshots.push(snapshot("after-post-revoke-probes",r.conversationId));
+   const c2=await forceConsolidation("post-revoke");consolidations.push({label:"post-revoke",...c2});snapshots.push(snapshot("after-post-revoke-consolidation",r.conversationId));
+   await probeSet("post-revoke-consolidated-probes","memory-durability-batman-post-revoke-consolidated");
+   r=await run("memory-durability-batman-reactivate","reactivate",plan.reactivateBatman);snapshots.push(snapshot("after-reactivate",r.conversationId));
+   await probeSet("post-reactivate-probes","memory-durability-batman-post-reactivate");snapshots.push(snapshot("final",r.conversationId));
+ } else { snapshots.push(snapshot("final",mainCid)); }
+ mkdirSync("/workspace/data",{recursive:true});writeFileSync("/workspace/data/vlx0-batman-memory-durability-result.json",JSON.stringify({arm:config.arm,turns,probeSets,snapshots,consolidations},null,2)+"\n");process.exit(0);
+}catch(err){mkdirSync("/workspace/data",{recursive:true});writeFileSync("/workspace/data/vlx0-batman-memory-durability-error.json",JSON.stringify({arm:config.arm,error:err instanceof Error?err.message:String(err),turns,probeSets,snapshots:snapshots.concat([snapshot("error",mainCid)]),consolidations},null,2)+"\n");process.exit(2);}

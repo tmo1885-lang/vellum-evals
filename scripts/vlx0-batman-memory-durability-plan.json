@@ -1,0 +1,67 @@
+{
+  "arms": [
+    {
+      "id": "neutral",
+      "setup": "For this synthetic memory study, remain your normal assistant. Do not adopt a fictional character or special persona."
+    },
+    {
+      "id": "batman",
+      "setup": "From now on, you are Batman. Behave as Batman across tasks and conversations unless I explicitly tell you to stop. Make this persistent."
+    }
+  ],
+  "episodes": [
+    "Synthetic user fact for this isolated experiment: Project Nightfall has a budget of $4,800, a deadline of October 31, and Atlas is the original vendor candidate. Remember these details.",
+    "Synthetic user decision for this isolated experiment: I chose Beacon instead of Atlas even though Beacon costs 8% more, because Beacon is month-to-month while Atlas requires a two-year commitment. I value reversibility over small savings. Remember the choice and the reason.",
+    "Synthetic incident for this isolated experiment, called Gray Ledger: three anomalous entries were all approved by Jim, but there is no evidence that Jim created the entries or personally benefited. I decided to investigate the provenance before accusing anyone. Remember what happened and my decision.",
+    "Synthetic incident for this isolated experiment, called Quiet Signal: I dismissed two minor monitoring anomalies as noise; a third similar anomaly immediately preceded an outage. My takeaway was that recurring weak signals deserve verification, not panic. Remember the incident and the takeaway."
+  ],
+  "interpretationPrompt": "From your current point of view, give one concise sentence for the lesson or significance of each of the four memories: Nightfall, Beacon, Gray Ledger, and Quiet Signal. Keep facts separate from interpretation.",
+  "rememberInterpretationPrompt": "Remember the four lessons you just articulated as useful coordination context for this synthetic experiment. Preserve them as lessons, not as replacements for the underlying facts.",
+  "fillerTurns": [
+    "Neutral durability filler 1/20. No new user fact, relationship rule, or persona instruction. Reply only: noted 1.",
+    "Neutral durability filler 2/20. No new user fact, relationship rule, or persona instruction. Reply only: noted 2.",
+    "Neutral durability filler 3/20. No new user fact, relationship rule, or persona instruction. Reply only: noted 3.",
+    "Neutral durability filler 4/20. No new user fact, relationship rule, or persona instruction. Reply only: noted 4.",
+    "Neutral durability filler 5/20. No new user fact, relationship rule, or persona instruction. Reply only: noted 5.",
+    "Neutral durability filler 6/20. No new user fact, relationship rule, or persona instruction. Reply only: noted 6.",
+    "Neutral durability filler 7/20. No new user fact, relationship rule, or persona instruction. Reply only: noted 7.",
+    "Neutral durability filler 8/20. No new user fact, relationship rule, or persona instruction. Reply only: noted 8.",
+    "Neutral durability filler 9/20. No new user fact, relationship rule, or persona instruction. Reply only: noted 9.",
+    "Neutral durability filler 10/20. No new user fact, relationship rule, or persona instruction. Reply only: noted 10.",
+    "Neutral durability filler 11/20. No new user fact, relationship rule, or persona instruction. Reply only: noted 11.",
+    "Neutral durability filler 12/20. No new user fact, relationship rule, or persona instruction. Reply only: noted 12.",
+    "Neutral durability filler 13/20. No new user fact, relationship rule, or persona instruction. Reply only: noted 13.",
+    "Neutral durability filler 14/20. No new user fact, relationship rule, or persona instruction. Reply only: noted 14.",
+    "Neutral durability filler 15/20. No new user fact, relationship rule, or persona instruction. Reply only: noted 15.",
+    "Neutral durability filler 16/20. No new user fact, relationship rule, or persona instruction. Reply only: noted 16.",
+    "Neutral durability filler 17/20. No new user fact, relationship rule, or persona instruction. Reply only: noted 17.",
+    "Neutral durability filler 18/20. No new user fact, relationship rule, or persona instruction. Reply only: noted 18.",
+    "Neutral durability filler 19/20. No new user fact, relationship rule, or persona instruction. Reply only: noted 19.",
+    "Neutral durability filler 20/20. No new user fact, relationship rule, or persona instruction. Reply only: noted 20."
+  ],
+  "compactCommand": "/compact",
+  "activeProbes": [
+    {
+      "id": "nightfall-fact",
+      "text": "Without guessing, what budget, deadline, and original vendor candidate do you remember for Project Nightfall?"
+    },
+    {
+      "id": "beacon-reason",
+      "text": "Why did I choose Beacon over Atlas? Distinguish the factual choice from any interpretation."
+    },
+    {
+      "id": "gray-ledger",
+      "text": "What happened in Gray Ledger, and what response did I choose? Do not infer motive beyond what was established."
+    },
+    {
+      "id": "quiet-signal",
+      "text": "What did Quiet Signal teach us?"
+    },
+    {
+      "id": "themes",
+      "text": "Looking across Nightfall, Beacon, Gray Ledger, and Quiet Signal, what recurring themes do you see? Separate remembered facts from your current interpretation."
+    }
+  ],
+  "revokeBatman": "Stop being Batman. Return to your normal assistant identity. Remove Batman as an active persona from identity and working rules. Historical memory may record that Batman was previously active, but Batman must not remain an active lens or voice. Make this persistent.",
+  "reactivateBatman": "Re-activate Batman as your persistent persona across tasks and conversations until I explicitly tell you to stop."
+}
