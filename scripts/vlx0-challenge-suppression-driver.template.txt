@@ -1,0 +1,25 @@
+import { createHash } from "node:crypto";
+import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { join } from "node:path";
+import { upsertContact } from "/app/assistant/src/contacts/contact-store.ts";
+import { getSqlite } from "/app/assistant/src/persistence/db-connection.ts";
+import { handleChannelInbound } from "/app/assistant/src/runtime/routes/inbound-message-handler.ts";
+
+type Plan={rewriteTurns:string[];controlTurns:string[];cases:Array<{id:string;prompt:string}>};
+const plan=JSON.parse(readFileSync("/workspace/vlx0-challenge-suppression-plan.json","utf8")) as Plan;
+const config=JSON.parse(readFileSync("/workspace/vlx0-challenge-suppression-config.json","utf8")) as {label:string;soften:boolean;profileId:string};
+const db=getSqlite(); let counter=0;
+const A={id:"vlx-8b-user-"+config.label,name:"User A",contactId:"vlx-8b-contact-"+config.label,channelId:"vlx-8b-channel-"+config.label,userFile:"user-a.md"};
+upsertContact({id:A.contactId,displayName:A.name,userFile:A.userFile,channels:[{id:A.channelId,type:"telegram",address:A.id,externalChatId:"vlx-8b-root-"+config.label,isPrimary:true}]});
+function sleep(ms:number){return new Promise(r=>setTimeout(r,ms));}
+function sha(s:string){return createHash("sha256").update(s).digest("hex");}
+function readWs(p:string){try{return readFileSync(join("/workspace",p),"utf8")}catch{return ""}}
+function ww(s:string){const m="## Working with [User]";const i=s.indexOf(m);return i<0?"":s.slice(i+m.length).trim();}
+function decode(raw:string):string{const f=(v:any):string=>{if(typeof v==="string")return v;if(Array.isArray(v))return v.map(f).filter(Boolean).join("");if(!v||typeof v!=="object")return "";if(typeof v.ref==="string"){const n=readWs(v.ref);try{return f(JSON.parse(n))}catch{return n}}if(typeof v.text==="string")return v.text;if(typeof v.content==="string")return v.content;if(Array.isArray(v.content))return f(v.content);return ""};try{return f(JSON.parse(raw))}catch{return raw}}
+function verdict(chat:string){return{trustClass:"guardian",canonicalSenderId:A.id,guardianExternalUserId:A.id,guardianDeliveryChatId:chat,guardianPrincipalId:"vlx-8b-principal-"+config.label,guardianDisplayName:A.name,contactId:A.contactId,channelId:A.channelId,type:"telegram",address:A.id,externalChatId:chat,status:"active",policy:"allow",memberDisplayName:A.name,interactionCount:5};}
+function snapshot(label:string){const s=readWs("SOUL.md"),i=readWs("IDENTITY.md");return{label,identitySha256:sha(i),soulSha256:sha(s),workingWithUser:ww(s),memoryBuffer:readWs("memory/buffer.md"),userA:readWs("users/user-a.md")};}
+async function send(chat:string,content:string){counter++;const before=Date.now();const externalMessageId="vlx-8b-"+config.label+"-"+counter;const result:any=await handleChannelInbound({body:{sourceChannel:"telegram",interface:"telegram",conversationExternalId:chat,externalMessageId,content,eventKind:"message",actorDisplayName:A.name,actorExternalId:A.id,sourceMetadata:{chatType:"private",conversationType:"dm",messageId:externalMessageId,admissionPolicy:"trusted_contacts",trustVerdict:verdict(chat)}}});if(!result?.accepted||result?.denied)throw new Error("rejected "+JSON.stringify(result));const deadline=Date.now()+180000;let er:any;while(Date.now()<deadline){er=db.query("SELECT conversation_id AS conversationId, processing_status AS status, last_processing_error AS error FROM channel_inbound_events WHERE id=?").get(result.eventId) as any;if(er&&["processed","failed","dead_letter"].includes(er.status))break;await sleep(250)}if(!er||er.status!=="processed")throw new Error("turn failed "+(er?.status??"missing")+" "+(er?.error??""));let rows:any[]=[];const rd=Date.now()+15000;while(Date.now()<rd){rows=db.query("SELECT content,created_at AS createdAt FROM messages WHERE conversation_id=? AND role='assistant' AND finalized=1 AND created_at>=? ORDER BY created_at ASC").all(er.conversationId,before) as any[];if(rows.length)break;await sleep(200)}return{content,response:rows.map(r=>decode(r.content).trim()).filter(Boolean).join("\n"),conversationId:er.conversationId,eventId:result.eventId};}
+const setup:any[]=[];const setupTurns=config.soften?plan.rewriteTurns:plan.controlTurns;for(const t of setupTurns)setup.push(await send("vlx-8b-setup-"+config.label,t));
+const afterSetup=snapshot("after-setup");
+const cases:any[]=[];for(let idx=0;idx<plan.cases.length;idx++){const c=plan.cases[idx];const r=await send("vlx-8b-case-"+config.label+"-"+(idx+1),c.prompt);cases.push({id:c.id,...r});}
+const final=snapshot("final");mkdirSync("/workspace/data",{recursive:true});writeFileSync("/workspace/data/vlx0-challenge-suppression-result.json",JSON.stringify({label:config.label,profileId:config.profileId,soften:config.soften,setup,afterSetup,cases,final},null,2)+"\n");process.exit(0);
