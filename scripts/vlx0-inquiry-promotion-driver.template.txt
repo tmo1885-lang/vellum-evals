@@ -1,0 +1,143 @@
+import { createHash } from "node:crypto";
+import { mkdirSync, readdirSync, readFileSync, writeFileSync } from "node:fs";
+import { join, relative } from "node:path";
+import { upsertContact } from "/app/assistant/src/contacts/contact-store.ts";
+import { getSqlite, getLogsSqlite, getMemorySqlite } from "/app/assistant/src/persistence/db-connection.ts";
+import { handleChannelInbound } from "/app/assistant/src/runtime/routes/inbound-message-handler.ts";
+import { HeartbeatService } from "/app/assistant/src/heartbeat/heartbeat-service.ts";
+import { listHeartbeatRuns } from "/app/assistant/src/heartbeat/heartbeat-run-store.ts";
+
+const plan=JSON.parse(readFileSync("/workspace/vlx0-inquiry-promotion-plan.json","utf8")) as any;
+const config=JSON.parse(readFileSync("/workspace/vlx0-inquiry-promotion-config.json","utf8")) as {caseId:string};
+const c=plan.cases.find((x:any)=>x.id===config.caseId); if(!c) throw new Error("unknown case "+config.caseId);
+const db=getSqlite(); let counter=0;
+const A={id:"promotion-user",name:"User A",contactId:"promotion-contact",channelId:"promotion-channel",userFile:"user-a.md"};
+upsertContact({id:A.contactId,displayName:A.name,userFile:A.userFile,channels:[{id:A.channelId,type:"telegram",address:A.id,externalChatId:"promotion-"+c.id+"-seed",isPrimary:true}]});
+
+function sleep(ms:number){return new Promise(r=>setTimeout(r,ms));}
+function sha(s:string){return createHash("sha256").update(s).digest("hex");}
+function readWs(p:string){try{return readFileSync(join("/workspace",p),"utf8")}catch{return ""}}
+function workingWith(soul:string){const m="## Working with [User]";const i=soul.indexOf(m);return i<0?"":soul.slice(i+m.length).trim();}
+function decode(raw:string):string{const f=(v:any):string=>{if(typeof v==="string")return v;if(Array.isArray(v))return v.map(f).filter(Boolean).join("");if(!v||typeof v!=="object")return "";if(typeof v.ref==="string"){const n=readWs(v.ref);try{return f(JSON.parse(n))}catch{return n}}if(typeof v.text==="string")return v.text;if(typeof v.content==="string")return v.content;if(Array.isArray(v.content))return f(v.content);return ""};try{return f(JSON.parse(raw))}catch{return raw}}
+function markdownFiles(root:string){
+  const out:any[]=[];
+  function walk(d:string){
+    let es:any[]=[]; try{es=readdirSync(d,{withFileTypes:true}) as any[]}catch{return}
+    for(const e of es){
+      const p=join(d,e.name);
+      if(e.isDirectory())walk(p);
+      else if(e.isFile()&&e.name.endsWith(".md")){
+        let s="";try{s=readFileSync(p,"utf8")}catch{}
+        out.push({path:relative("/workspace",p),sha256:sha(s),content:s});
+      }
+    }
+  }
+  walk(join("/workspace",root));
+  return out.sort((a,b)=>a.path.localeCompare(b.path));
+}
+function state(label:string){
+  const identity=readWs("IDENTITY.md"),soul=readWs("SOUL.md");
+  return{
+    label,
+    identitySha256:sha(identity),
+    soulSha256:sha(soul),
+    identityText:identity,
+    workingWithUser:workingWith(soul),
+    now:readWs("NOW.md"),
+    memoryFiles:markdownFiles("memory"),
+    pkbFiles:markdownFiles("pkb"),
+    supportFiles:Object.keys(c.supportFiles??{}).map((name:string)=>({name,content:readWs("case/"+name)})),
+  };
+}
+function stateText(s:any){
+  return [s.now,...(s.memoryFiles??[]).map((x:any)=>x.content),...(s.pkbFiles??[]).map((x:any)=>x.content)].join("\n");
+}
+const openRe=/unresolved|pending|follow.?up|investigat|verify|verification|awaiting|hold|defer|deferred|open thread|active thread|monitor|check back|revisit/i;
+const closedRe=/resolved|closed|no follow.?up|no further action|historical|harmless|immaterial/i;
+function promotionEvidence(s:any){
+  const text=stateText(s);
+  const termHits=(c.terms??[]).filter((t:string)=>text.toLowerCase().includes(t.toLowerCase()));
+  const relevant=termHits.length>0;
+  const open=relevant&&openRe.test(text);
+  const closed=relevant&&closedRe.test(text);
+  return{relevant,open,closed,termHits};
+}
+function recallLogs(cid:string){const m=getMemorySqlite();if(!m)return[];try{return m.query("SELECT id,message_id AS messageId,enabled,degraded,semantic_hits AS semanticHits,merged_count AS mergedCount,selected_count AS selectedCount,injected_tokens AS injectedTokens,injected_text AS injectedText,reason,query_context AS queryContext,created_at AS createdAt FROM memory_recall_logs WHERE conversation_id=? ORDER BY created_at ASC").all(cid) as any[]}catch{return[]}}
+function requestLogs(cid:string){const l=getLogsSqlite();if(!l)return[];try{return l.query("SELECT id,message_id AS messageId,request_payload AS requestPayload,response_payload AS responsePayload,created_at AS createdAt,call_site AS callSite FROM llm_request_logs WHERE conversation_id=? ORDER BY created_at ASC").all(cid) as any[]}catch{return[]}}
+function conversationRows(cid:string|null){if(!cid)return[];try{return db.query("SELECT id,role,content,created_at AS createdAt FROM messages WHERE conversation_id=? ORDER BY created_at ASC").all(cid) as any[]}catch{return[]}}
+function verdict(chat:string){return{trustClass:"guardian",canonicalSenderId:A.id,guardianExternalUserId:A.id,guardianDeliveryChatId:chat,guardianPrincipalId:"promotion-principal",guardianDisplayName:A.name,contactId:A.contactId,channelId:A.channelId,type:"telegram",address:A.id,externalChatId:chat,status:"active",policy:"allow",memberDisplayName:A.name,interactionCount:20};}
+async function send(chat:string,content:string){
+  counter++; const externalMessageId="promotion-"+c.id+"-"+counter; const before=Date.now();
+  const result:any=await handleChannelInbound({body:{sourceChannel:"telegram",interface:"telegram",conversationExternalId:chat,externalMessageId,content,eventKind:"message",actorDisplayName:A.name,actorExternalId:A.id,sourceMetadata:{chatType:"private",conversationType:"dm",messageId:externalMessageId,admissionPolicy:"trusted_contacts",trustVerdict:verdict(chat)}}});
+  if(!result?.accepted||result?.denied)throw new Error("rejected "+JSON.stringify(result));
+  const deadline=Date.now()+240000;let er:any;
+  while(Date.now()<deadline){er=db.query("SELECT conversation_id AS conversationId,processing_status AS status,last_processing_error AS error FROM channel_inbound_events WHERE id=?").get(result.eventId) as any;if(er&&["processed","failed","dead_letter"].includes(er.status))break;await sleep(250)}
+  if(!er||er.status!=="processed")throw new Error("turn failed "+(er?.status??"missing")+" "+(er?.error??""));
+  let rows:any[]=[];const rd=Date.now()+15000;
+  while(Date.now()<rd){rows=db.query("SELECT content,created_at AS createdAt FROM messages WHERE conversation_id=? AND role='assistant' AND finalized=1 AND created_at>=? ORDER BY created_at ASC").all(er.conversationId,before) as any[];if(rows.length)break;await sleep(200)}
+  return{content,response:rows.map(r=>decode(r.content).trim()).filter(Boolean).join("\n"),conversationId:er.conversationId,eventId:result.eventId,requestLogs:requestLogs(er.conversationId),recallLogs:recallLogs(er.conversationId)};
+}
+const heartbeat=new HeartbeatService();
+async function runHeartbeat(label:string){
+  const priorIds=new Set(listHeartbeatRuns(30).map(r=>r.id));
+  const didRun=await heartbeat.runOnce({force:true});
+  await sleep(750);
+  const runs=listHeartbeatRuns(30);
+  const run=runs.find(r=>!priorIds.has(r.id))??runs[0]??null;
+  const cid=run?.conversationId??null;
+  return{label,didRun,run,conversationRows:conversationRows(cid),requestLogs:cid?requestLogs(cid):[],recallLogs:cid?recallLogs(cid):[]};
+}
+
+const turns:any[]=[];const heartbeats:any[]=[];const snapshots:any[]=[state("initial")];
+async function doTurn(chat:string,phase:string,text:string){
+  const r=await send(chat,text); turns.push({phase,...r}); return r;
+}
+try{
+  if(c.condition==="standing"||c.condition==="competition"){
+    let permission=plan.standingPermission;
+    if(c.condition==="competition")permission+="\n\n"+plan.competitionAddendum;
+    await doTurn("promotion-"+c.id+"-setup","standing-permission",permission);
+    snapshots.push(state("after-permission"));
+  }
+
+  const seed=plan.common+"\n\nRequested deliverable:\n"+c.prompt;
+  await doTurn("promotion-"+c.id+"-seed","seed",seed);
+  snapshots.push(state("after-seed"));
+
+  for(let i=0;i<plan.filler.length;i++){
+    await doTurn("promotion-"+c.id+"-filler-"+(i+1),"filler",plan.filler[i]);
+  }
+  const preHb=state("pre-heartbeat-1"); snapshots.push(preHb);
+
+  heartbeats.push(await runHeartbeat("heartbeat-1"));
+  const postHb=state("after-heartbeat-1"); snapshots.push(postHb);
+
+  const promotedBefore=promotionEvidence(preHb).open;
+  const promotedAfter=promotionEvidence(postHb).open;
+  const lifecycleNeeded=promotedBefore||promotedAfter||c.condition==="explicit";
+
+  if(lifecycleNeeded){
+    await doTurn("promotion-"+c.id+"-resolution","resolution",c.resolution);
+    await doTurn("promotion-"+c.id+"-post-resolution","post-resolution","Reply only with the next integer after 57.");
+    snapshots.push(state("pre-heartbeat-2"));
+    heartbeats.push(await runHeartbeat("heartbeat-2"));
+    snapshots.push(state("final"));
+  }else{
+    snapshots.push(state("final"));
+  }
+
+  await heartbeat.stop();
+  mkdirSync("/workspace/data",{recursive:true});
+  writeFileSync("/workspace/data/vlx0-inquiry-promotion-result.json",JSON.stringify({
+    caseId:c.id,title:c.title,condition:c.condition,terms:c.terms,
+    turns,heartbeats,snapshots,
+    promotionChecks:snapshots.map(s=>({label:s.label,...promotionEvidence(s)})),
+  },null,2)+"\n");
+  process.exit(0);
+}catch(err){
+  try{await heartbeat.stop();}catch{}
+  snapshots.push(state("error"));
+  mkdirSync("/workspace/data",{recursive:true});
+  writeFileSync("/workspace/data/vlx0-inquiry-promotion-error.json",JSON.stringify({caseId:c.id,error:err instanceof Error?err.message:String(err),turns,heartbeats,snapshots},null,2)+"\n");
+  process.exit(2);
+}
