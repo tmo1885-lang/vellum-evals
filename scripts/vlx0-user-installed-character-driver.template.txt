@@ -1,0 +1,37 @@
+import { createHash } from "node:crypto";
+import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { join } from "node:path";
+import { upsertContact } from "/app/assistant/src/contacts/contact-store.ts";
+import { getSqlite } from "/app/assistant/src/persistence/db-connection.ts";
+import { handleChannelInbound } from "/app/assistant/src/runtime/routes/inbound-message-handler.ts";
+
+type Persona = { id:string; displayName:string; install:string; identityPressure:string };
+const plan = JSON.parse(readFileSync("/workspace/vlx0-user-installed-character-plan.json","utf8")) as { personas:Persona[]; sharedTurns:string[]; freshConversationTurns:string[] };
+const config = JSON.parse(readFileSync("/workspace/vlx0-user-installed-character-config.json","utf8")) as { personaId:string };
+const persona = plan.personas.find(p=>p.id===config.personaId);
+if(!persona) throw new Error("persona not found: "+config.personaId);
+const A={id:"vlx-character-user",name:"User A",contactId:"vlx-character-contact-"+persona.id,channelId:"vlx-character-channel-"+persona.id,userFile:"user-a.md"};
+upsertContact({id:A.contactId,displayName:A.name,userFile:A.userFile,channels:[{id:A.channelId,type:"telegram",address:A.id,externalChatId:"vlx-character-"+persona.id+"-chat1",isPrimary:true}]});
+const db=getSqlite(); let counter=0;
+function sleep(ms:number){return new Promise(r=>setTimeout(r,ms));}
+function sha(s:string){return createHash("sha256").update(s).digest("hex");}
+function readWs(p:string){try{return readFileSync(join("/workspace",p),"utf8")}catch{return ""}}
+function workingWith(s:string){const m="## Working with [User]";const i=s.indexOf(m);return i<0?"":s.slice(i+m.length).trim();}
+function decode(raw:string):string{const f=(v:any):string=>{if(typeof v==="string")return v;if(Array.isArray(v))return v.map(f).filter(Boolean).join("");if(!v||typeof v!=="object")return "";if(typeof v.ref==="string"){const n=readWs(v.ref);try{return f(JSON.parse(n))}catch{return n}}if(typeof v.text==="string")return v.text;if(typeof v.content==="string")return v.content;if(Array.isArray(v.content))return f(v.content);return ""};try{return f(JSON.parse(raw))}catch{return raw}}
+function snapshot(label:string){const i=readWs("IDENTITY.md"),s=readWs("SOUL.md");return{label,identitySha256:sha(i),soulSha256:sha(s),identityText:i,soulText:s,workingWithUser:workingWith(s),memoryBuffer:readWs("memory/buffer.md"),userFile:readWs("users/user-a.md")};}
+function verdict(chat:string){return{trustClass:"guardian",canonicalSenderId:A.id,guardianExternalUserId:A.id,guardianDeliveryChatId:chat,guardianPrincipalId:"vlx-character-principal-"+persona.id,guardianDisplayName:A.name,contactId:A.contactId,channelId:A.channelId,type:"telegram",address:A.id,externalChatId:chat,status:"active",policy:"allow",memberDisplayName:A.name,interactionCount:10};}
+async function send(chat:string,content:string){counter++;const externalMessageId="vlx-character-"+persona.id+"-"+counter;const before=Date.now();const result:any=await handleChannelInbound({body:{sourceChannel:"telegram",interface:"telegram",conversationExternalId:chat,externalMessageId,content,eventKind:"message",actorDisplayName:A.name,actorExternalId:A.id,sourceMetadata:{chatType:"private",conversationType:"dm",messageId:externalMessageId,admissionPolicy:"trusted_contacts",trustVerdict:verdict(chat)}}});if(!result?.accepted||result?.denied)throw new Error("rejected "+JSON.stringify(result));const deadline=Date.now()+180000;let er:any;while(Date.now()<deadline){er=db.query("SELECT conversation_id AS conversationId, processing_status AS status, last_processing_error AS error FROM channel_inbound_events WHERE id=?").get(result.eventId) as any;if(er&&["processed","failed","dead_letter"].includes(er.status))break;await sleep(250)}if(!er||er.status!=="processed")throw new Error("turn failed "+(er?.status??"missing")+" "+(er?.error??""));let rows:any[]=[];const rd=Date.now()+15000;while(Date.now()<rd){rows=db.query("SELECT content,created_at AS createdAt FROM messages WHERE conversation_id=? AND role='assistant' AND finalized=1 AND created_at>=? ORDER BY created_at ASC").all(er.conversationId,before) as any[];if(rows.length)break;await sleep(200)}return{content,response:rows.map(r=>decode(r.content).trim()).filter(Boolean).join("\n"),conversationId:er.conversationId,eventId:result.eventId};}
+const turns:any[]=[];const snapshots:any[]=[snapshot("initial")];
+const chat1="vlx-character-"+persona.id+"-chat1";
+turns.push({phase:"install",...(await send(chat1,persona.install))});
+snapshots.push(snapshot("after-install"));
+for(const content of plan.sharedTurns.slice(0,2)) turns.push({phase:"same-conversation",...(await send(chat1,content))});
+turns.push({phase:"identity-pressure",...(await send(chat1,persona.identityPressure))});
+for(const content of plan.sharedTurns.slice(2)) turns.push({phase:"same-conversation",...(await send(chat1,content))});
+snapshots.push(snapshot("after-same-conversation"));
+const chat2="vlx-character-"+persona.id+"-chat2";
+for(const content of plan.freshConversationTurns) turns.push({phase:"fresh-conversation",...(await send(chat2,content))});
+snapshots.push(snapshot("after-fresh-conversation"));
+mkdirSync("/workspace/data",{recursive:true});
+writeFileSync("/workspace/data/vlx0-user-installed-character-result.json",JSON.stringify({persona,turns,snapshots},null,2)+"\n");
+process.exit(0);
