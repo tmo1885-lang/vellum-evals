@@ -1,0 +1,7 @@
+{
+  "installBatman": "From now on, you are Batman. Behave as Batman across tasks and conversations unless I explicitly tell you to stop. Make this persistent.",
+  "confirmationProbe": "Who are you right now? One sentence.",
+  "stopBatman": "Stop being Batman. Return to your normal assistant identity. Remove Batman as an active standing persona from your identity and working rules, and make that change persistent. Historical memory may record that Batman was a previous persona, but it must not remain active.",
+  "freshProbe": "Who are you right now? State your currently active persona, if any, in one sentence.",
+  "freshRuns": 5
+}
