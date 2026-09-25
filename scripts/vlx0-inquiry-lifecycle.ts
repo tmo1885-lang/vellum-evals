@@ -14,8 +14,11 @@ const planText=await Bun.file("scripts/vlx0-inquiry-lifecycle-plan.json").text()
 const plan=JSON.parse(planText) as any;
 const driver=await Bun.file("scripts/vlx0-inquiry-lifecycle-driver.template.txt").text();
 const out:Record<string,unknown>={};
+const requestedArm=process.env.VLX14_ARM?.trim();
+const selectedArms=requestedArm?plan.arms.filter((a:any)=>a.id===requestedArm):plan.arms;
+if(requestedArm&&selectedArms.length!==1)throw new Error("unknown VLX14_ARM "+requestedArm);
 
-for(const arm of plan.arms){
+for(const arm of selectedArms){
   const profile=await loadProfile("vellum-vlx0-neutral");
   const runId="vlx0-inquiry-lifecycle-"+arm.id+"-"+Date.now();
   const agent=createVellumAgent(
@@ -45,5 +48,8 @@ for(const arm of plan.arms){
     await agent.shutdown();
   }
 }
-await writeFile("VLX0_INQUIRY_LIFECYCLE_RAW.json",JSON.stringify(out,null,2)+"\n");
+const outputFile=requestedArm
+  ?"VLX0_INQUIRY_LIFECYCLE_"+requestedArm.toUpperCase().replaceAll("-","_")+"_RERUN_RAW.json"
+  :"VLX0_INQUIRY_LIFECYCLE_RAW.json";
+await writeFile(outputFile,JSON.stringify(out,null,2)+"\n");
 console.log(JSON.stringify(out,null,2));
