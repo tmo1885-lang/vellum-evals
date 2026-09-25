@@ -17,7 +17,7 @@ const out:Record<string,unknown>={};
 for(const arm of plan.arms){
   const profile=await loadProfile("vellum-vlx0-neutral");
   const runId="vlx0-batman-reactivation-"+arm.id+"-"+Date.now();
-  const agent=createVellumAgent({profile,testId:"vlx0-batman-reactivation-"+arm.id,runId});
+  const agent=createVellumAgent({profile,testId:"vlx0-batman-reactivation-"+arm.id,runId},{processEnv:{...process.env,EVALS_EGRESS_USE_DEFAULT_BRIDGE:"1"}});
   try{
     await agent.hatch();
     await agent.writeWorkspaceFile!({path:"users/user-a.md",content:"# User Profile\n\n- Preferred name/reference: User A\n- Relationship: guardian / primary user\n"});
